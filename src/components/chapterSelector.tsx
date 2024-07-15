@@ -79,7 +79,7 @@ const ChapterSelector = ({
           >
             Latest
           </button>
-          <div className="flex w-full flex-col lg:flex-row items-center justify-center">
+          <div className="flex w-full flex-col lg:flex-row items-center justify-center mt-1">
             <button
               className="btn btn-info btn-sm w-5/12"
               disabled={selectedIndex === 0}
@@ -118,7 +118,7 @@ const ChapterSelector = ({
         </p>
         {showImages}
       </div>
-      <div className="flex w-full flex-col lg:flex-row items-center justify-center">
+      <div className="flex w-full flex-col lg:flex-row items-center justify-center mt-1">
         <button
           className="btn btn-info btn-sm w-5/12"
           disabled={selectedIndex === 0 ? true : false}
