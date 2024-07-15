@@ -29,6 +29,9 @@ const nextConfig = {
       {
         hostname: "mangareader.tv",
       },
+      {
+        hostname: "mn2.mkklcdnv6temp.com",
+      },
     ],
   },
   logging: {

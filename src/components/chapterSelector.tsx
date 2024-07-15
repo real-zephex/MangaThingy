@@ -18,7 +18,9 @@ const ChapterSelector = ({
   const index = data.results.chapters?.length! - 1;
 
   useEffect(() => {
-    getImages(data.results.chapters[0].id);
+    if (data.results && data.results.chapters.length > 0) {
+      getImages(data.results.chapters[0].id);
+    }
   }, []);
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -115,7 +117,11 @@ const ChapterSelector = ({
         </div>
       </label>
       <div className="flex items-center flex-col justify-center">
-        <p className="mb-2">{data.results.chapters[selectedIndex].title}</p>
+        <p className="mb-2">
+          {data.results.chapters.length > 0
+            ? data.results.chapters[selectedIndex].title
+            : ""}
+        </p>
         {loading}
         {showImages}
       </div>

@@ -3,14 +3,17 @@
 import Image from "next/image";
 import { Key } from "react";
 
-const ImageDisplay = async (data: any, provider: string) => {
+import { ImageUrls } from "../data/types";
+
+const ImageDisplay = async (data: ImageUrls, provider: string) => {
   var mangapillCondition: boolean;
-  if (provider == "mangapill") {
+  if (provider == "mangapill" || provider == "manganato") {
     mangapillCondition = true;
   }
   return (
     <div className="mt-1 flex flex-col items-center w-full">
       {data &&
+        data.results.length > 0 &&
         data.results.map((item: string, index: Key | null | undefined) => (
           <Image
             width={1080}

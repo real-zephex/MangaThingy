@@ -54,3 +54,8 @@ interface ChapterResults {
   id: string;
   title: string;
 }
+
+export interface ImageUrls {
+  status: Number;
+  results: string[];
+}
