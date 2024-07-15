@@ -1,7 +1,6 @@
 "use client";
 
 import { MangaInfo } from "./data/types";
-import { imagesLoading, imageLoaded } from "./ui/image-loading";
 import { imageFetcher } from "./data/requests";
 import ImageDisplay from "./ui/image-display";
 
@@ -25,21 +24,16 @@ const ChapterSelector = ({
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [showImages, setImages] = useState<JSX.Element>(<></>);
-  const [loading, setLoading] = useState<JSX.Element>(<></>);
 
   const getImages = async (id: string) => {
     const loading = (
       <span className="loading loading-infinity loading-lg mt-2"></span>
     );
     setImages(loading);
-    setLoading(imagesLoading(`Loading Images.`));
+    // setLoading(imagesLoading(`Loading Images.`));
     const data = await imageFetcher(id, provider);
     const format = await ImageDisplay(data, provider);
     setImages(format);
-    setLoading(imageLoaded("Images loaded successfully."));
-    setTimeout(function () {
-      setLoading(<></>);
-    }, 2000);
   };
 
   return (
@@ -122,7 +116,6 @@ const ChapterSelector = ({
             ? data.results.chapters[selectedIndex].title
             : ""}
         </p>
-        {loading}
         {showImages}
       </div>
       <div className="flex w-full flex-col lg:flex-row items-center justify-center">
