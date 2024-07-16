@@ -25,7 +25,7 @@ const Tabs = async ({
               aria-label="Description"
             />
             <div role="tabpanel" className="tab-content p-2">
-              {data.results.description}
+              <p>{data.results.description}</p>
             </div>
           </>
         )}

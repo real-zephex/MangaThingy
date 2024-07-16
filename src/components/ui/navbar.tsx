@@ -27,13 +27,12 @@ const Navbar = async () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <a>Homepage</a>
+              <Link href={"/"}>Homepage</Link>
             </li>
             <li>
-              <a>Portfolio</a>
-            </li>
-            <li>
-              <a>About</a>
+              <Link href={"https://paypal.me/realzephex"} target="_blank">
+                Support my work!
+              </Link>
             </li>
           </ul>
         </div>
