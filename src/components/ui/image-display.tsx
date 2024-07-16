@@ -26,6 +26,7 @@ const ImageDisplay = async (data: ImageUrls, provider: string) => {
             alt="Manga Page"
             className="w-full h-full"
             priority
+            unoptimized
           ></Image>
         ))}
     </div>
