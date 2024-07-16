@@ -40,15 +40,13 @@ const ChapterSelector = ({
     <main>
       <label className="form-control w-full">
         <div className="label">
-          <span className="label-text">
-            Pick which chapter you want to read
-          </span>
+          <span className="label-text">Pick a chapter</span>
           <span className="label-text-alt">
             {data.results.chapters?.length} chapters found
           </span>
         </div>
         <select
-          className="select select-bordered"
+          className="select select-bordered w-full"
           onChange={async (event) => {
             const selectedKey: SetStateAction<string> = event.target.value;
             const selectedOption =
