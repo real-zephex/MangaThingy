@@ -20,10 +20,8 @@ const ImageDisplay = async (data: ImageUrls, provider: string) => {
             key={index}
             src={
               mangapillCondition
-                ? `/api/?provider=${provider}&imageUrl=${encodeURIComponent(
-                    item
-                  )}`
-                : `/api/?imageUrl=${encodeURIComponent(item)}`
+                ? `https://manga-scrapers.onrender.com/${provider}/images/${item}`
+                : item
             }
             alt="Manga Page"
             className="w-full h-full"
