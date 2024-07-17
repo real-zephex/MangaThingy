@@ -42,7 +42,7 @@ const Search = () => {
                 }
               }}
             >
-              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50">
+              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md">
                 <Image
                   src={
                     provider == "mangapill"
@@ -116,8 +116,8 @@ const Search = () => {
           />
         </svg>
       </button>
-      <dialog id="my_modal_2" className="modal items-start mt-2">
-        <div className="modal-box w-full max-w-5xl">
+      <dialog id="my_modal_2" className="modal mt-2">
+        <div className="modal-box w-full max-w-6xl p-4">
           <div className="flex flex-row items-center">
             <input
               type="search"
