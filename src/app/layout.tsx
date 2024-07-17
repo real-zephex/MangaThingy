@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lexend_Deca } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
+import LoggedInWrapper from "@/components/data/logged-in-wrapper";
 
 const inter = Lexend_Deca({ subsets: ["latin"] });
 
@@ -35,8 +36,12 @@ export default function RootLayout({
         ></script>
       </head>
       <body className={inter.className}>
-        <Navbar />
-        <div data-theme="dracula">{children}</div>
+        <div data-theme="dracula">
+          <LoggedInWrapper>
+            <Navbar />
+            {children}
+          </LoggedInWrapper>
+        </div>
       </body>
     </html>
   );

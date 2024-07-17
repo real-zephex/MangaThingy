@@ -32,6 +32,12 @@ const nextConfig = {
       {
         hostname: "mn2.mkklcdnv6temp.com",
       },
+      {
+        hostname: "avatars.githubusercontent.com",
+      },
+      {
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
   },
   logging: {
