@@ -8,7 +8,8 @@ export async function writeData(name: string, email: string) {
     .insert([{ name: name, email: email }]);
 
   if (error) {
-    return error;
+    console.error(error);
+    return false;
   } else {
     return true;
   }

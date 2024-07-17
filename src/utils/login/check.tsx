@@ -10,19 +10,19 @@ const LoginDetect = () => {
     <button
       className="btn btn-outline btn-primary"
       onClick={() => (status === "authenticated" ? signOut() : signIn())}
+      title={
+        status === "authenticated" ? "click to log out" : "click to log in"
+      }
     >
-      <div
-        className="flex flex-row items-center justify-between"
-        title="click to logout"
-      >
+      <div className="flex flex-row items-center">
         <Image
           src={status === "authenticated" ? session?.user?.image! : "/sign.jpg"}
-          width={20}
-          height={20}
+          width={50}
+          height={50}
           alt="Profile Picture"
-          className="rounded-lg mr-4"
+          className="rounded-lg"
         />
-        <p className="pl-2 ml-2">{session?.user?.name!}</p>
+        <p>{session?.user?.name!}</p>
       </div>
     </button>
   );
