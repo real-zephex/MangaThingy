@@ -1,5 +1,12 @@
 import { animeTypeSearch } from "@/components/data/requests";
 import SwiperContainer from "@/components/anime-ui/homepage-cards";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "MangaThingy Anime",
+  description:
+    "Anime website where you watch animes without any ads or interruptions.",
+};
 
 const AnimeHomepage = async () => {
   const popular = await animeTypeSearch("popular");

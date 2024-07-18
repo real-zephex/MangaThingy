@@ -1,26 +1,29 @@
 import Image from "next/image";
 import { GogoanimeInfo } from "../data/types";
+import { useMemo } from "react";
 
 const AnimeInformation = async ({
   animeInfo,
 }: {
   animeInfo: GogoanimeInfo;
 }) => {
+  const info = useMemo(() => animeInfo, [animeInfo]);
+
   return (
     <main className="w-full mt-2">
       <div className="flex flex-row items-center p-1 bg-slate-700/50 rounded-md">
         <Image
-          src={animeInfo.image}
+          src={info.image}
           height={200}
           width={150}
           alt="Anime Poster"
           className="rounded-md border-2 border-zinc-700"
         />
         <div className="ml-2\1 flex flex-col">
-          <p className="text-2xl font-semibold">{animeInfo.title}</p>
+          <p className="text-2xl font-semibold">{info.title}</p>
           <div className="flex flex-wrap items-center">
-            {animeInfo.status && (
-              <div className="badge badge-info ml-1 ">{animeInfo.status}</div>
+            {info.status && (
+              <div className="badge badge-info ml-1 ">{info.status}</div>
             )}
           </div>
         </div>
@@ -35,7 +38,7 @@ const AnimeInformation = async ({
           defaultChecked
         />
         <div role="tabpanel" className="tab-content p-2">
-          <p>{animeInfo.description}</p>
+          <p>{info.description}</p>
         </div>
 
         <input
@@ -46,8 +49,8 @@ const AnimeInformation = async ({
           aria-label="Info"
         />
         <div role="tabpanel" className="tab-content p-2">
-          <p>Type: {animeInfo.type}</p>
-          <p>SUB or DUB: {animeInfo.subOrDub}</p>
+          <p>Type: {info.type}</p>
+          <p>SUB or DUB: {info.subOrDub}</p>
         </div>
       </div>
     </main>
