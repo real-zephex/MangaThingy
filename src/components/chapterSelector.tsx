@@ -4,6 +4,8 @@ import { MangaInfo } from "./data/types";
 import { imageFetcher } from "./data/requests";
 import ImageDisplay from "./ui/image-display";
 
+import { useMemo } from "react";
+import { useCallback } from "react";
 import { useState, SetStateAction, useEffect } from "react";
 
 const ChapterSelector = ({
@@ -13,28 +15,28 @@ const ChapterSelector = ({
   data: MangaInfo;
   provider: string;
 }) => {
+  const newData = useMemo(() => data, [data]);
   // Latest chapter load, placing it here significantly improves the performance
-  const index = data.results.chapters?.length! - 1;
+  const index = newData.results.chapters?.length! - 1;
 
   useEffect(() => {
-    if (data.results && data.results.chapters.length > 0) {
-      getImages(data.results.chapters[0].id);
+    if (newData.results && newData.results.chapters.length > 0) {
+      getImages(newData.results.chapters[0].id);
     }
   }, []);
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [showImages, setImages] = useState<JSX.Element>(<></>);
 
-  const getImages = async (id: string) => {
+  const getImages = useCallback(async (id: string) => {
     const loading = (
       <span className="loading loading-infinity loading-lg mt-2"></span>
     );
     setImages(loading);
-    // setLoading(imagesLoading(`Loading Images.`));
     const data = await imageFetcher(id, provider);
     const format = await ImageDisplay(data, provider);
     setImages(format);
-  };
+  }, []);
 
   return (
     <main>
@@ -42,7 +44,7 @@ const ChapterSelector = ({
         <div className="label">
           <span className="label-text">Pick a chapter</span>
           <span className="label-text-alt">
-            {data.results.chapters?.length} chapters found
+            {newData.results.chapters?.length} chapters found
           </span>
         </div>
         <select
@@ -59,7 +61,7 @@ const ChapterSelector = ({
           <option disabled selected>
             Pick one
           </option>
-          {data.results.chapters?.map((item, index) => (
+          {newData.results.chapters?.map((item, index) => (
             <option key={index} value={item.id} data-index={index}>
               {item.title}
             </option>
@@ -69,9 +71,9 @@ const ChapterSelector = ({
           <button
             className="btn btn-warning btn-sm w-full"
             onClick={() => {
-              if (data.results.chapters) {
+              if (newData.results.chapters) {
                 setSelectedIndex(index);
-                getImages(data.results.chapters[index].id);
+                getImages(newData.results.chapters[index].id);
               }
             }}
           >
@@ -84,7 +86,7 @@ const ChapterSelector = ({
               onClick={() => {
                 const index = selectedIndex - 1;
                 setSelectedIndex(index);
-                getImages(data.results.chapters[index].id);
+                getImages(newData.results.chapters[index].id);
               }}
             >
               Previous
@@ -93,14 +95,14 @@ const ChapterSelector = ({
             <button
               className="btn btn-success btn-sm w-5/12"
               disabled={
-                selectedIndex == data.results.chapters?.length! - 1
+                selectedIndex == newData.results.chapters?.length! - 1
                   ? true
                   : false
               }
               onClick={() => {
                 const index = selectedIndex + 1;
                 setSelectedIndex(index);
-                getImages(data.results.chapters[index].id);
+                getImages(newData.results.chapters[index].id);
               }}
             >
               Next
@@ -110,8 +112,8 @@ const ChapterSelector = ({
       </label>
       <div className="flex items-center flex-col justify-center">
         <p className="mb-2">
-          {data.results.chapters.length > 0
-            ? data.results.chapters[selectedIndex].title
+          {newData.results.chapters.length > 0
+            ? newData.results.chapters[selectedIndex].title
             : ""}
         </p>
         {showImages}
@@ -123,7 +125,7 @@ const ChapterSelector = ({
           onClick={() => {
             const index = selectedIndex - 1;
             setSelectedIndex(index);
-            getImages(data.results.chapters[index].id);
+            getImages(newData.results.chapters[index].id);
           }}
         >
           Previous
@@ -132,12 +134,14 @@ const ChapterSelector = ({
         <button
           className="btn btn-success btn-sm w-5/12"
           disabled={
-            selectedIndex == data.results.chapters?.length! - 1 ? true : false
+            selectedIndex == newData.results.chapters?.length! - 1
+              ? true
+              : false
           }
           onClick={() => {
             const index = selectedIndex + 1;
             setSelectedIndex(index);
-            getImages(data.results.chapters[index].id);
+            getImages(newData.results.chapters[index].id);
           }}
         >
           Next

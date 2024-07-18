@@ -1,3 +1,5 @@
+"use server";
+
 import { MangaInfo } from "../data/types";
 import Image from "next/image";
 
