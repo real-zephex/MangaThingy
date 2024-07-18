@@ -32,6 +32,9 @@ const nextConfig = {
       {
         hostname: "mn2.mkklcdnv6temp.com",
       },
+      {
+        hostname: "gogocdn.net",
+      },
     ],
   },
   logging: {

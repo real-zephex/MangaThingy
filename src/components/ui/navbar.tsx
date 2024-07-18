@@ -27,15 +27,15 @@ const Navbar = async () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <Link href={"/"}>Homepage</Link>
-            </li>
-            <li>
               <Link href={"https://paypal.me/realzephex"} target="_blank">
                 Support my work!
               </Link>
             </li>
           </ul>
         </div>
+        <Link href={"/anime"}>
+          <button className="btn">Anime</button>
+        </Link>
       </div>
       <div className="navbar-center">
         <Link href={"/"} className="btn btn-ghost text-xl">
