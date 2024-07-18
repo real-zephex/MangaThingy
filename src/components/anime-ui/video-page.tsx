@@ -69,7 +69,7 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
           <section className="ml-2 my-2">
             <p className="font-semibold text-2xl text-secondary">Episodes</p>
           </section>
-          <div className="flex flex-col h-60 overflow-auto">
+          <div className="flex flex-col h-60 overflow-auto p-1">
             {data.map((item, index) => (
               <button
                 className="btn mb-2"
