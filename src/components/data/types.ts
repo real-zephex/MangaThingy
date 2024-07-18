@@ -30,6 +30,8 @@ interface SearchResults {
   updated?: string;
   year?: string;
   subheading?: string;
+  releaseDate?: string;
+  subOrDub?: string;
 }
 
 export interface MangaInfo {
@@ -58,4 +60,55 @@ interface ChapterResults {
 export interface ImageUrls {
   status: Number;
   results: string[];
+}
+
+export interface GogoanimeSearch {
+  currentPage: number;
+  hasNextPage: boolean;
+  results: GogoAnimeSearchResults[];
+}
+
+interface GogoAnimeSearchResults {
+  id: string;
+  title: string;
+  url?: string;
+  image: string;
+  releaseDate: string;
+  subOrDub: string;
+  episodeNumber: number;
+  status?: string;
+  chapters?: string;
+}
+
+export interface GogoanimeInfo {
+  id: string;
+  title: string;
+  url: string;
+  genres: string[];
+  totalEpisodes: number;
+  image: string;
+  description: string;
+  releaseDate: string;
+  subOrDub: string;
+  type: string;
+  status: string;
+  episodes: GogoanimeEpisodes[];
+}
+
+export interface GogoanimeEpisodes {
+  id: string;
+  number: Number;
+  url: string;
+}
+
+export interface GogoanimeVideo {
+  headers: { Referer: string };
+  sources: GogovideoResults[];
+  download: string;
+}
+
+interface GogovideoResults {
+  url: string;
+  isM3U8: string;
+  quality: string;
 }
