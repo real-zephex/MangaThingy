@@ -7,7 +7,7 @@ const AnimeInfoPage = async ({ params }: { params: { id: string } }) => {
   const episodeData = data.episodes;
 
   return (
-    <main className="lg:w-9/12 w-full mx-auto overflow-x-hidden">
+    <main className="lg:w-9/12 w-full mx-auto overflow-x-hidden mt-1">
       <AnimeVideoPage data={episodeData} />
       <AnimeInformation animeInfo={data} />
     </main>

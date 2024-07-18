@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
 
 import { GogoanimeSearch } from "../data/types";
 
@@ -18,6 +19,8 @@ const SwiperContainer = ({
   data: GogoanimeSearch;
   displayText: string;
 }) => {
+  const dataMemoized = useMemo(() => data, [data]);
+
   return (
     <section className="w-full">
       <div className=" h-full">
@@ -26,14 +29,13 @@ const SwiperContainer = ({
             {displayText}
           </p>
           <Swiper
-            // navigation
             pagination={{ type: "progressbar", clickable: true }}
             autoplay={true}
             loop={true}
             modules={[Autoplay, Pagination]}
           >
-            {data &&
-              data.results.map((item, index) => (
+            {dataMemoized &&
+              dataMemoized.results.map((item, index) => (
                 <SwiperSlide key={index}>
                   <Link href={`/anime/${item.id}`}>
                     <div className="flex flex-row items-center p-1 bg-slate-700/50 shadow-2xl">
