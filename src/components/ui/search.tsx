@@ -60,6 +60,7 @@ const Search = () => {
                   height={250}
                   alt="Manga Poster Image"
                   className="h-full w-20 rounded-md border-4 border-zinc-600"
+                  priority
                 />
                 <div className="flex flex-col ml-1">
                   <p className="font-semibold">{item.title}</p>
@@ -108,6 +109,7 @@ const Search = () => {
                   height={250}
                   alt="Manga Poster Image"
                   className="h-full w-20 rounded-md border-4 border-zinc-600"
+                  priority
                 />
                 <div className="flex flex-col ml-1">
                   <p className="font-semibold">{item.title}</p>

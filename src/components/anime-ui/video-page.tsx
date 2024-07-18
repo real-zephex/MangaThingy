@@ -10,7 +10,7 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
   const [cacheStatus, setStatus] = useState<JSX.Element>(<></>);
   const [videoPlayer, setVideoPlayer] = useState<JSX.Element>(
     <div className="flex flex-col gap-4 justify-center">
-      <div className="skeleton h-72 w-full"></div>
+      <div className="skeleton h-64 2xl:h-[47rem] md:h-[27rem] xl:h-[37rem] w-full"></div>
     </div>
   );
 
