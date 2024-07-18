@@ -34,7 +34,13 @@ const Navbar = async () => {
           </ul>
         </div>
         <Link href={"/anime"}>
-          <button className="btn">Anime</button>
+          <button className="btn">
+            Anime
+            <div className="hidden lg:flex items-center">
+              <kbd className="kbd kbd-sm">ctrl</kbd> +
+              <kbd className="kbd kbd-sm">a</kbd>
+            </div>
+          </button>
         </Link>
       </div>
       <div className="navbar-center">
@@ -43,7 +49,7 @@ const Navbar = async () => {
         </Link>
       </div>
       <div className="navbar-end">
-        <div className="hidden lg:flex">
+        <div className="hidden lg:flex items-center">
           <kbd className="kbd kbd-sm">ctrl</kbd> +
           <kbd className="kbd kbd-sm">k</kbd>
         </div>

@@ -4,11 +4,14 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SearchMangas } from "../data/requests";
+import { useRouter } from "next/navigation";
 
+import { SearchMangas } from "../data/requests";
 import { animeTypeSearch } from "../data/requests";
 
 const Search = () => {
+  const router = useRouter();
+
   const [mangaTitle, setMangaTitle] = useState<string>("");
   const [provider, setProvider] = useState<string>("mangapill");
   const [format, setFormat] = useState<JSX.Element>(<></>);
@@ -143,6 +146,18 @@ const Search = () => {
     if (modal) {
       modal.showModal();
     }
+  });
+
+  useHotkeys("ctrl+a", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    router.push("/anime");
+  });
+
+  useHotkeys("ctrl+m", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    router.push("/");
   });
 
   return (
