@@ -11,6 +11,7 @@ export async function writeData(name: string, email: string) {
     console.error(error);
     return false;
   } else {
+    console.log("Woo");
     return true;
   }
 }

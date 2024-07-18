@@ -17,8 +17,8 @@ const LoginDetect = () => {
       <div className="flex flex-row items-center">
         <Image
           src={status === "authenticated" ? session?.user?.image! : "/sign.jpg"}
-          width={50}
-          height={50}
+          width={30}
+          height={30}
           alt="Profile Picture"
           className="rounded-lg"
         />
