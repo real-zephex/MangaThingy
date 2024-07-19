@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.44.4",
     "@vidstack/react": "^1.11.29",
     "daisyui": "^4.12.10",
     "hls.js": "^1.5.13",
