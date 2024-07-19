@@ -148,9 +148,9 @@ const ChapterSelector = ({
     <main>
       <label className="form-control w-full">
         <div className="label">
-          <span className="label-text">Pick a chapter</span>
+          {/* <span className="label-text">Pick a chapter</span> */}
           <button
-            className="btn btn-sm no-animation"
+            className="btn btn-xs no-animation btn-accent"
             disabled={dbIndex == 0}
             onClick={() => {
               debouncedGetImages(data.results.chapters[dbIndex].id);
