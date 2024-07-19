@@ -2,7 +2,18 @@
 
 import { supabase } from "./supabase";
 
-export async function WriteData(email: string, manga_data: any) {
+export async function UpdateDatabase(email: string, manga_data: any) {
+  const { data, error } = await supabase
+    .from("history")
+    .update({ manga: manga_data })
+    .eq("email", email);
+
+  if (error) {
+    console.log(error.code);
+  }
+}
+
+export async function WriteDatabase(email: string, manga_data: any) {
   const { data, error } = await supabase.from("history").insert([
     {
       email: email,
