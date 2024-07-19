@@ -1,5 +1,6 @@
 import Search from "./search";
 import Link from "next/link";
+import LoginButton from "./login-button";
 
 const Navbar = async () => {
   return (
@@ -26,6 +27,7 @@ const Navbar = async () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
           >
+            <LoginButton />
             <li>
               <Link href={"https://paypal.me/realzephex"} target="_blank">
                 Support my work!
