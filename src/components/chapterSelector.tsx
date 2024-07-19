@@ -18,7 +18,7 @@ const ChapterSelector = ({
   const newData = useMemo(() => data, [data]);
   // Latest chapter load, placing it here significantly improves the performance
   const index = newData.results.chapters?.length! - 1;
-
+  
   useEffect(() => {
     if (newData.results && newData.results.chapters.length > 0) {
       getImages(newData.results.chapters[0].id);
