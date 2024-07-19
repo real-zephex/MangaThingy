@@ -28,10 +28,11 @@ const ChapterSelector = ({
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [showImages, setImages] = useState<JSX.Element>(<></>);
 
+  const loading = (
+    <span className="loading loading-infinity loading-lg mt-2"></span>
+  );
+
   const getImages = useCallback(async (id: string) => {
-    const loading = (
-      <span className="loading loading-infinity loading-lg mt-2"></span>
-    );
     setImages(loading);
     const data = await imageFetcher(id, provider);
     const format = await ImageDisplay(data, provider);
