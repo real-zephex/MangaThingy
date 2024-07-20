@@ -1,6 +1,7 @@
 import Search from "./search";
 import Link from "next/link";
 import LoginButton from "./login-button";
+import ProfileIcon from "./profile-icon";
 
 const Navbar = async () => {
   return (
@@ -51,11 +52,14 @@ const Navbar = async () => {
         </Link>
       </div>
       <div className="navbar-end">
-        <div className="hidden lg:flex items-center">
-          <kbd className="kbd kbd-sm">ctrl</kbd> +
-          <kbd className="kbd kbd-sm">k</kbd>
+        <div className="flex items-center">
+          <div className="hidden lg:flex items-center">
+            <kbd className="kbd kbd-sm">ctrl</kbd> +
+            <kbd className="kbd kbd-sm">k</kbd>
+          </div>
+          <Search />
+          <ProfileIcon />
         </div>
-        <Search />
       </div>
     </div>
   );

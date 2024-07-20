@@ -35,6 +35,12 @@ const nextConfig = {
       {
         hostname: "gogocdn.net",
       },
+      {
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        hostname: "avatars.githubusercontent.com",
+      },
     ],
   },
   logging: {
