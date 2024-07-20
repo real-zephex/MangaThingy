@@ -144,13 +144,19 @@ const ChapterSelector = ({
     await UpdateDatabase(email, new_data);
   }
 
+  // Prevent unwanted actions on presses
+  const preventUnwantedActions = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   return (
     <main>
       <label className="form-control w-full">
-        <div className="label">
-          {/* <span className="label-text">Pick a chapter</span> */}
+        <div className="label" onClick={preventUnwantedActions}>
           <button
             className="btn btn-xs no-animation btn-accent"
+            type="button"
             disabled={dbIndex == 0}
             onClick={() => {
               debouncedGetImages(data.results.chapters[dbIndex].id);
@@ -194,6 +200,7 @@ const ChapterSelector = ({
         <div className="label w-full flex flex-col items-center justify-center">
           <button
             className="btn btn-warning btn-sm w-full"
+            type="button"
             onClick={() => {
               if (newData.results.chapters) {
                 setSelectedIndex(index);
@@ -205,9 +212,13 @@ const ChapterSelector = ({
           >
             Latest
           </button>
-          <div className="flex w-full flex-col lg:flex-row items-center justify-center mt-1">
+          <div
+            className="flex w-full flex-col lg:flex-row items-center justify-center mt-1"
+            onClick={preventUnwantedActions}
+          >
             <button
               onClick={() => handleNavigation("prev")}
+              type="button"
               disabled={selectedIndex === 0}
               className="btn btn-info btn-sm w-5/12"
               aria-label="Previous chapter button"
@@ -217,6 +228,7 @@ const ChapterSelector = ({
             <div className="divider lg:divider-horizontal">OR</div>
             <button
               onClick={() => handleNavigation("next")}
+              type="button"
               disabled={selectedIndex === newData.results.chapters?.length! - 1}
               className="btn btn-success btn-sm w-5/12"
               aria-label="Next chapter button"
@@ -234,9 +246,13 @@ const ChapterSelector = ({
         </p>
         {showImages}
       </div>
-      <div className="flex w-full flex-col lg:flex-row items-center justify-center mt-1">
+      <div
+        className="flex w-full flex-col lg:flex-row items-center justify-center mt-1"
+        onClick={preventUnwantedActions}
+      >
         <button
           onClick={() => handleNavigation("prev")}
+          type="button"
           disabled={selectedIndex === 0}
           className="btn btn-info btn-sm w-5/12"
           aria-label="Previous chapter button"
@@ -246,6 +262,7 @@ const ChapterSelector = ({
         <div className="divider lg:divider-horizontal">OR</div>
         <button
           onClick={() => handleNavigation("next")}
+          type="button"
           disabled={selectedIndex === newData.results.chapters?.length! - 1}
           className="btn btn-success btn-sm w-5/12"
           aria-label="Next chapter button"

@@ -29,7 +29,7 @@ const LoginDetect = () => {
   }
 
   return (
-    <main>
+    <main className="z-50">
       {displayStatus && status === "authenticated" && (
         <div className="toast" id="toast">
           <div className="alert alert-info">
