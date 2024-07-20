@@ -41,16 +41,3 @@ export async function UserLog(email: string, name: string) {
   }
   return false;
 }
-
-// const example_json = {
-//   name: "Solo Leveling",
-//   chapter: 10,
-// };
-
-// const temp_mail = "zephex@duck.com";
-
-// async function main() {
-//   await WriteData(temp_mail, example_json);
-// }
-
-// main();

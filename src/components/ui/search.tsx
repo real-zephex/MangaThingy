@@ -216,6 +216,8 @@ const Search = () => {
                   <option value="mangapill">Mangapill</option>
                   <option value="mangaworld">Mangaworld</option>
                   <option value="mangareader">Mangareader</option>
+                  <option value="flamescans">Flamescans</option>
+                  <option value="manganato">Manganato</option>
                 </>
               )}
             </select>

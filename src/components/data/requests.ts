@@ -28,7 +28,7 @@ export const FlamescansPopularData = async (type: string) => {
 
 export const SearchMangas = async (provider: string, title: string) => {
   const res = await fetch(
-    `https://manga-scrapers.onrender.com/${provider}/search/${title}`,
+    `https://mscrapers.vercel.app/${provider}/search/${title}`,
     {
       next: { revalidate: 21600 },
     }
@@ -39,7 +39,7 @@ export const SearchMangas = async (provider: string, title: string) => {
 
 export const MangaInfoFetcher = async (provider: string, id: string) => {
   const res = await fetch(
-    `https://manga-scrapers.onrender.com/${provider}/info/${id}`,
+    `https://mscrapers.vercel.app/${provider}/info/${id}`,
     { next: { revalidate: 21600 } }
   );
   const content: MangaInfo = await res.json();
