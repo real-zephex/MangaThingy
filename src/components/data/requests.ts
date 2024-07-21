@@ -27,8 +27,12 @@ export const FlamescansPopularData = async (type: string) => {
 };
 
 export const SearchMangas = async (provider: string, title: string) => {
+  const manganato_condition = provider == "manganato" ? true : false;
+
   const res = await fetch(
-    `https://mscrapers.vercel.app/${provider}/search/${title}`,
+    !manganato_condition
+      ? `https://mscrapers.vercel.app/${provider}/search/${title}`
+      : `https://manga-scrapers.onrender.com/manganato/search/${title}`,
     {
       next: { revalidate: 21600 },
     }

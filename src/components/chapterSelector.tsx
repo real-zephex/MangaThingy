@@ -244,7 +244,25 @@ const ChapterSelector = ({
             ? newData.results.chapters[selectedIndex].title
             : ""}
         </p>
-        {showImages}
+        <section
+          className="w-full flex  justify-center"
+          onClick={(event) => {
+            event.preventDefault();
+            window.scrollBy({
+              top: 800,
+              behavior: "smooth",
+            });
+          }}
+          onContextMenu={(event) => {
+            event.preventDefault();
+            window.scrollBy({
+              top: -800,
+              behavior: "smooth",
+            });
+          }}
+        >
+          {showImages}
+        </section>
       </div>
       <div
         className="flex w-full flex-col lg:flex-row items-center justify-center mt-1"
