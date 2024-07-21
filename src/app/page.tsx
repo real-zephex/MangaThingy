@@ -5,7 +5,7 @@ import LoginDetect from "@/utils/login/check";
 
 const Homepage = async () => {
   return (
-    <main data-theme="dracula">
+    <main>
       <Updated />
       <div className="divider divider-info">or</div>
       <Popular />

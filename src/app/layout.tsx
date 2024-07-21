@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="dracula">
+    <html lang="en" data-theme="dim">
       <Head>
         <meta name="google-adsense-account" content="ca-pub-7424574858811768" />
         <script
@@ -75,7 +75,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <LoggedInWrapper>
           <Navbar />
-          <div data-theme="dracula">{children}</div>
+          <div>{children}</div>
         </LoggedInWrapper>
       </body>
     </html>
