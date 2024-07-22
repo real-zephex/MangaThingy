@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.44.4",
     "@vidstack/react": "^1.11.29",
+    "axios": "^1.7.2",
     "daisyui": "^4.12.10",
     "hls.js": "^1.5.13",
     "next": "14.2.5",

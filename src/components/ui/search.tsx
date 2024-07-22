@@ -27,8 +27,8 @@ const Search = () => {
 
   const setResults = async () => {
     setFormat(
-      <div className="flex items-center justify-center mt-4">
-        <span className="loading loading-dots loading-lg"></span>
+      <div className="flex items-center justify-center mt-4" aria-live="polite" aria-busy="true">
+        <span className="loading loading-dots loading-lg" aria-label="Loading results"></span>
       </div>
     );
     const data = pathname.match(/^\/anime(\/.*)?$/)
@@ -36,7 +36,7 @@ const Search = () => {
       : await SearchMangas(provider, mangaTitle);
 
     const designResults = pathname.match(/^\/anime(\/.*)?$/) ? (
-      <div className="flex flex-col mt-2">
+      <div className="flex flex-col mt-2" aria-label="Anime Search Results">
         {data &&
           data.results.length > 0 &&
           data.results.map((item, index) => (
@@ -51,8 +51,10 @@ const Search = () => {
                   modal.close();
                 }
               }}
+              aria-label={`Link to ${item.title}`}
+              title={`Link to ${item.title}`}
             >
-              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md">
+              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md" aria-label="Anime Item">
                 <Image
                   src={
                     provider == "mangapill"
@@ -61,20 +63,21 @@ const Search = () => {
                   }
                   width={200}
                   height={250}
-                  alt="Manga Poster Image"
+                  alt="Anime Poster Image"
                   className="h-full w-20 rounded-md border-4 border-zinc-600"
                   priority
+                  aria-label="Anime Poster Image"
                 />
-                <div className="flex flex-col ml-1">
-                  <p className="font-semibold">{item.title}</p>
-                  <div className="flex flex-row items-center">
+                <div className="flex flex-col ml-1" aria-label="Anime Details">
+                  <p className="font-semibold" aria-label="Anime Title">{item.title}</p>
+                  <div className="flex flex-row items-center" aria-label="Anime Metadata">
                     {item.releaseDate && (
-                      <div className="badge badge-success gap-2 badge-outline">
+                      <div className="badge badge-success gap-2 badge-outline" aria-label="Release Date">
                         {item.releaseDate}
                       </div>
                     )}
                     {item.subOrDub && (
-                      <div className="badge badge-info gap-2 badge-outline ml-1">
+                      <div className="badge badge-info gap-2 badge-outline ml-1" aria-label="Sub or Dub">
                         {item.subOrDub}
                       </div>
                     )}
@@ -85,7 +88,7 @@ const Search = () => {
           ))}
       </div>
     ) : (
-      <div className="flex flex-col mt-2">
+      <div className="flex flex-col mt-2" aria-label="Manga Search Results">
         {data &&
           data.results.length > 0 &&
           data.results.map((item, index) => (
@@ -100,8 +103,10 @@ const Search = () => {
                   modal.close();
                 }
               }}
+              aria-label={`Link to ${item.title}`}
+              title={`Link to ${item.title}`}
             >
-              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md">
+              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md" aria-label="Manga Item">
                 <Image
                   src={
                     provider == "mangapill"
@@ -113,17 +118,18 @@ const Search = () => {
                   alt="Manga Poster Image"
                   className="h-full w-20 rounded-md border-4 border-zinc-600"
                   priority
+                  aria-label="Manga Poster Image"
                 />
-                <div className="flex flex-col ml-1">
-                  <p className="font-semibold">{item.title}</p>
-                  <div className="flex flex-row items-center">
+                <div className="flex flex-col ml-1" aria-label="Manga Details">
+                  <p className="font-semibold" aria-label="Manga Title">{item.title}</p>
+                  <div className="flex flex-row items-center" aria-label="Manga Metadata">
                     {item.status && (
-                      <div className="badge badge-success gap-2 badge-outline">
+                      <div className="badge badge-success gap-2 badge-outline" aria-label="Status">
                         {item.status}
                       </div>
                     )}
                     {item.chapters && (
-                      <div className="badge badge-info gap-2 badge-outline ml-1">
+                      <div className="badge badge-info gap-2 badge-outline ml-1" aria-label="Chapters">
                         {item.chapters} chapters
                       </div>
                     )}
@@ -161,7 +167,7 @@ const Search = () => {
   });
 
   return (
-    <main>
+    <main aria-label="Search Component">
       <button
         className="btn btn-ghost btn-circle"
         onClick={() => {
@@ -172,6 +178,8 @@ const Search = () => {
             modal.showModal();
           }
         }}
+        aria-label="Open Search Modal"
+        title="Open Search Modal"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -179,6 +187,7 @@ const Search = () => {
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -188,9 +197,9 @@ const Search = () => {
           />
         </svg>
       </button>
-      <dialog id="my_modal_2" className="modal mt-2">
-        <div className="modal-box w-full max-w-6xl p-4">
-          <div className="flex flex-row items-center">
+      <dialog id="my_modal_2" className="modal mt-2" aria-label="Search Modal">
+        <div className="modal-box w-full max-w-6xl p-4" aria-label="Search Modal Box">
+          <div className="flex flex-row items-center" aria-label="Search Input Container">
             <input
               type="search"
               placeholder="Type here"
@@ -204,28 +213,32 @@ const Search = () => {
                 }
               }}
               className="input input-bordered input-secondary w-full"
+              aria-label="Search Input"
+              title="Search Input"
             />
             <select
               className="select select-info select-bordered w-1/2 lg:w-1/3 ml-1"
               onChange={handleChange}
+              aria-label="Provider Selector"
+              title="Provider Selector"
             >
               {pathname.match(/^\/anime(\/.*)?$/) ? (
-                <option value="anime">Anime</option>
+                <option value="anime" aria-label="Anime Option">Anime</option>
               ) : (
                 <>
-                  <option value="mangapill">Mangapill</option>
-                  <option value="mangaworld">Mangaworld</option>
-                  <option value="mangareader">Mangareader</option>
-                  <option value="flamescans">Flamescans</option>
-                  <option value="manganato">Manganato</option>
+                  <option value="mangapill" aria-label="Mangapill Option">Mangapill</option>
+                  <option value="mangaworld" aria-label="Mangaworld Option">Mangaworld</option>
+                  <option value="mangareader" aria-label="Mangareader Option">Mangareader</option>
+                  <option value="flamescans" aria-label="Flamescans Option">Flamescans</option>
+                  <option value="manganato" aria-label="Manganato Option">Manganato</option>
                 </>
               )}
             </select>
           </div>
           {format}
         </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
+        <form method="dialog" className="modal-backdrop" aria-label="Close Modal Form">
+          <button aria-label="Close Modal Button" title="Close Modal Button">close</button>
         </form>
       </dialog>
     </main>

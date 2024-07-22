@@ -72,7 +72,11 @@ const ChapterSelector = ({
   const [dbIndex, setDbIndex] = useState<number>(0);
 
   const loading = (
-    <span className="loading loading-infinity loading-lg mt-2"></span>
+    <span
+      className="loading loading-infinity loading-lg mt-2"
+      aria-live="polite"
+      aria-busy="true"
+    ></span>
   );
 
   const getImages = useCallback(async (id: string) => {
@@ -162,11 +166,18 @@ const ChapterSelector = ({
               debouncedGetImages(data.results.chapters[dbIndex].id);
               setSelectedIndex(dbIndex);
             }}
+            aria-label="Resume Reading"
+            title="Resume Reading"
           >
             Resume Reading
-            <div className="badge badge-neutral">{dbIndex.toString()}</div>
+            <div
+              className="badge badge-neutral"
+              aria-label={`Chapter ${dbIndex}`}
+            >
+              {dbIndex.toString()}
+            </div>
           </button>
-          <span className="label-text-alt">
+          <span className="label-text-alt" aria-live="polite">
             {newData.results.chapters?.length} chapters found
           </span>
         </div>
@@ -182,6 +193,8 @@ const ChapterSelector = ({
             DatabaseHandler(index);
           }}
           value={newData.results.chapters[selectedIndex]?.id} // Was looking for this for so long :>
+          aria-label="Chapter Selector"
+          title="Chapter Selector"
         >
           <option disabled aria-label="Disabled option key">
             Pick one
@@ -192,6 +205,7 @@ const ChapterSelector = ({
               value={item.id}
               data-index={index}
               aria-label={item.title}
+              title={item.title}
             >
               {item.title}
             </option>
@@ -209,6 +223,7 @@ const ChapterSelector = ({
               }
             }}
             aria-label="Latest chapter button"
+            title="Latest chapter button"
           >
             Latest
           </button>
@@ -222,16 +237,20 @@ const ChapterSelector = ({
               disabled={selectedIndex === 0}
               className="btn btn-info btn-sm w-5/12"
               aria-label="Previous chapter button"
+              title="Previous chapter button"
             >
               Previous
             </button>
-            <div className="divider lg:divider-horizontal">OR</div>
+            <div className="divider lg:divider-horizontal" aria-hidden="true">
+              OR
+            </div>
             <button
               onClick={() => handleNavigation("next")}
               type="button"
               disabled={selectedIndex === newData.results.chapters?.length! - 1}
               className="btn btn-success btn-sm w-5/12"
               aria-label="Next chapter button"
+              title="Next chapter button"
             >
               Next
             </button>
@@ -239,7 +258,7 @@ const ChapterSelector = ({
         </div>
       </label>
       <div className="flex items-center flex-col justify-center">
-        <p className="mb-2">
+        <p className="mb-2" aria-live="polite">
           {newData.results.chapters.length > 0
             ? newData.results.chapters[selectedIndex].title
             : ""}
@@ -260,6 +279,8 @@ const ChapterSelector = ({
               behavior: "smooth",
             });
           }}
+          aria-label="Image Display Section"
+          title="Image Display Section"
         >
           {showImages}
         </section>
@@ -269,23 +290,27 @@ const ChapterSelector = ({
         onClick={preventUnwantedActions}
       >
         <button
-          onClick={() => handleNavigation("prev")}
-          type="button"
-          disabled={selectedIndex === 0}
-          className="btn btn-info btn-sm w-5/12"
-          aria-label="Previous chapter button"
-        >
-          Previous
-        </button>
-        <div className="divider lg:divider-horizontal">OR</div>
-        <button
           onClick={() => handleNavigation("next")}
           type="button"
           disabled={selectedIndex === newData.results.chapters?.length! - 1}
           className="btn btn-success btn-sm w-5/12"
           aria-label="Next chapter button"
+          title="Next chapter button"
         >
           Next
+        </button>
+        <div className="divider lg:divider-horizontal" aria-hidden="true">
+          OR
+        </div>
+        <button
+          onClick={() => handleNavigation("prev")}
+          type="button"
+          disabled={selectedIndex === 0}
+          className="btn btn-info btn-sm w-5/12"
+          aria-label="Previous chapter button"
+          title="Previous chapter button"
+        >
+          Previous
         </button>
       </div>
     </main>

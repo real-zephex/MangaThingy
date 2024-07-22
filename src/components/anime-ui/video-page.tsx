@@ -10,7 +10,10 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
   const [cacheStatus, setStatus] = useState<JSX.Element>(<></>);
   const [videoPlayer, setVideoPlayer] = useState<JSX.Element>(
     <div className="flex flex-col gap-4 justify-center">
-      <div className="skeleton h-64 2xl:h-[47rem] md:h-[27rem] xl:h-[37rem] w-full"></div>
+      <div
+        className="skeleton h-64 2xl:h-[47rem] md:h-[27rem] xl:h-[37rem] w-full"
+        aria-label="Loading video player"
+      ></div>
     </div>
   );
 
@@ -18,7 +21,10 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
     async (index: number) => {
       setVideoPlayer(
         <div className="flex flex-col gap-4 justify-center mb-2">
-          <div className="skeleton h-64 2xl:h-[47rem] md:h-[27rem] xl:h-[37rem] w-full"></div>
+          <div
+            className="skeleton h-64 2xl:h-[47rem] md:h-[27rem] xl:h-[37rem] w-full"
+            aria-label="Loading video player"
+          ></div>
         </div>
       );
       const vidId = data[index].id;
@@ -45,12 +51,12 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
   const cacheIndicator = async () => {
     const status = await vidLinksCacher(data);
     setStatus(
-      <div className="toast">
+      <div className="toast" role="status" aria-live="polite">
         <div className="alert alert-info">
           <span>
             {status
               ? "Video links pre-fetched successfully."
-              : "Some error occured"}
+              : "Some error occurred"}
           </span>
         </div>
       </div>
@@ -75,10 +81,14 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
               setIndex(newIndex);
               getVidLink(newIndex);
             }}
+            aria-label="Previous episode"
+            title="Previous episode"
           >
             Previous
           </button>
-          <div className="divider divider-horizontal">OR</div>
+          <div className="divider divider-horizontal" aria-hidden="true">
+            OR
+          </div>
           <button
             className="btn btn-success btn-sm"
             disabled={currentIndex === data.length - 1}
@@ -87,15 +97,22 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
               setIndex(newIndex);
               getVidLink(newIndex);
             }}
+            aria-label="Next episode"
+            title="Next episode"
           >
             Next
           </button>
         </div>
         <div className="bg-base-300 flex flex-col overflow-auto h-auto rounded-md">
           <section className="ml-2 my-2">
-            <p className="font-semibold text-2xl text-secondary">Episodes</p>
+            <p
+              className="font-semibold text-2xl text-secondary"
+              aria-label="Episodes list"
+            >
+              Episodes
+            </p>
           </section>
-          <div className="flex flex-col h-60 overflow-auto p-1">
+          <div className="flex flex-col h-60 overflow-auto p-1" role="list">
             {dataMemoized.map((item, index) => (
               <button
                 className="btn mb-2"
@@ -104,6 +121,9 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
                   setIndex(index);
                   getVidLink(index);
                 }}
+                aria-label={`Episode ${item.number.toString()}`}
+                title={`Episode ${item.number.toString()}`}
+                role="listitem"
               >
                 Episode {item.number.toString()}
               </button>
