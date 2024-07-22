@@ -16,9 +16,23 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
       ></div>
     </div>
   );
+  const [vidLoadingIndicator, setVidLoadingIndicator] = useState<JSX.Element>(
+    <></>
+  );
+
+  const vidStatus = (message: string) => {
+    return (
+      <div className="toast toast-top toast-center">
+        <div className="alert alert-info">
+          <span>{message}</span>
+        </div>
+      </div>
+    );
+  };
 
   const getVidLink = useCallback(
     async (index: number) => {
+      setVidLoadingIndicator(vidStatus("Loading video, please wait..."));
       setVideoPlayer(
         <div className="flex flex-col gap-4 justify-center mb-2">
           <div
@@ -31,6 +45,7 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
       const res = await animeVideoLink(vidId);
       const url = res.sources[res.sources.length - 2].url;
       const vidPlay = loadVideoPlayer(url, `Episode ${index + 1}`);
+      setVidLoadingIndicator(<></>);
       setVideoPlayer(vidPlay);
     },
     [data]
@@ -70,6 +85,7 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
 
   return (
     <main>
+      {vidLoadingIndicator}
       <div className="flex flex-col overflow-x-hidden h-full">
         <div>{videoPlayer}</div>
         <div className="flex flex-row justify-center items-center mb-1">
@@ -103,31 +119,29 @@ const AnimeVideoPage = ({ data }: { data: GogoanimeEpisodes[] }) => {
             Next
           </button>
         </div>
-        <div className="bg-base-300 flex flex-col overflow-auto h-auto rounded-md">
-          <section className="ml-2 my-2">
-            <p
-              className="font-semibold text-2xl text-secondary"
-              aria-label="Episodes list"
-            >
-              Episodes
-            </p>
-          </section>
-          <div className="flex flex-col h-60 overflow-auto p-1" role="list">
-            {dataMemoized.map((item, index) => (
-              <button
-                className="btn mb-2"
-                key={index}
-                onClick={() => {
-                  setIndex(index);
-                  getVidLink(index);
-                }}
-                aria-label={`Episode ${item.number.toString()}`}
-                title={`Episode ${item.number.toString()}`}
-                role="listitem"
-              >
-                Episode {item.number.toString()}
-              </button>
-            ))}
+        <div className="collapse bg-base-200">
+          <input type="checkbox" />
+          <div className="collapse-title text-xl font-medium">
+            Episodes - click here to show
+          </div>
+          <div className="collapse-content">
+            <div className="flex flex-col h-60 overflow-auto p-1" role="list">
+              {dataMemoized.map((item, index) => (
+                <button
+                  className="btn mb-2 btn-neutral btn-sm "
+                  key={index}
+                  onClick={() => {
+                    setIndex(index);
+                    getVidLink(index);
+                  }}
+                  aria-label={`Episode ${item.number.toString()}`}
+                  title={`Episode ${item.number.toString()}`}
+                  role="listitem"
+                >
+                  Episode {item.number.toString()}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
