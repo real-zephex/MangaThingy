@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2c7fc91b-9c5c-48c0-a26f-fe6df9a34b4c" />
+</p>
 
-## Getting Started
+<hr />
 
-First, run the development server:
+# MangaThingy
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+NextJs site where you can read mangas and watch animes ad-free!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Screenshots
+- MangaPage
+![image](https://github.com/user-attachments/assets/816891d5-2afd-4268-8dc4-89ce0a34d4a0)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+- AnimePage
+![image](https://github.com/user-attachments/assets/8ab76777-7a9b-49bc-94ef-545821ddd39d)
 
-To learn more about Next.js, take a look at the following resources:
+## Features
+1. Clean UI (I guess?)
+2. Multiple sources available for mangas.
+3. Google and Github login support.
+4. Your manga reading progress is synced with your account, meaning you can can continue from anywhere.
+5. Leveraged SSR wherever possible.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Demo
+Site is available at [MangaThingy](https://mangathingy.netlify.app)
 
-## Deploy on Vercel
+[![Netlify Status](https://api.netlify.com/api/v1/badges/19bf90a8-d35b-4253-87e0-886e3403de3e/deploy-status)](https://app.netlify.com/sites/mangathingy/deploys)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contributions/Suggestions
+Contributors are welcome! For suggestions, create a new issue and describe your suggestion.
