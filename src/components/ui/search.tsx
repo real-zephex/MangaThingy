@@ -1,5 +1,5 @@
 "use client";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, useCallback, useMemo } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,10 +25,17 @@ const Search = () => {
     console.log(`Selected: ${event.target.value}`);
   };
 
-  const setResults = async () => {
+  const setResults = useCallback(async () => {
     setFormat(
-      <div className="flex items-center justify-center mt-4" aria-live="polite" aria-busy="true">
-        <span className="loading loading-dots loading-lg" aria-label="Loading results"></span>
+      <div
+        className="flex items-center justify-center mt-4"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <span
+          className="loading loading-dots loading-lg"
+          aria-label="Loading results"
+        ></span>
       </div>
     );
     const data = pathname.match(/^\/anime(\/.*)?$/)
@@ -54,7 +61,10 @@ const Search = () => {
               aria-label={`Link to ${item.title}`}
               title={`Link to ${item.title}`}
             >
-              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md" aria-label="Anime Item">
+              <div
+                className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md"
+                aria-label="Anime Item"
+              >
                 <Image
                   src={
                     provider == "mangapill"
@@ -69,15 +79,26 @@ const Search = () => {
                   aria-label="Anime Poster Image"
                 />
                 <div className="flex flex-col ml-1" aria-label="Anime Details">
-                  <p className="font-semibold" aria-label="Anime Title">{item.title}</p>
-                  <div className="flex flex-row items-center" aria-label="Anime Metadata">
+                  <p className="font-semibold" aria-label="Anime Title">
+                    {item.title}
+                  </p>
+                  <div
+                    className="flex flex-row items-center"
+                    aria-label="Anime Metadata"
+                  >
                     {item.releaseDate && (
-                      <div className="badge badge-success gap-2 badge-outline" aria-label="Release Date">
+                      <div
+                        className="badge badge-success gap-2 badge-outline"
+                        aria-label="Release Date"
+                      >
                         {item.releaseDate}
                       </div>
                     )}
                     {item.subOrDub && (
-                      <div className="badge badge-info gap-2 badge-outline ml-1" aria-label="Sub or Dub">
+                      <div
+                        className="badge badge-info gap-2 badge-outline ml-1"
+                        aria-label="Sub or Dub"
+                      >
                         {item.subOrDub}
                       </div>
                     )}
@@ -106,7 +127,10 @@ const Search = () => {
               aria-label={`Link to ${item.title}`}
               title={`Link to ${item.title}`}
             >
-              <div className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md" aria-label="Manga Item">
+              <div
+                className="flex flex-row items-center w-full my-1 bg-slate-700/50 rounded-md"
+                aria-label="Manga Item"
+              >
                 <Image
                   src={
                     provider == "mangapill"
@@ -121,15 +145,26 @@ const Search = () => {
                   aria-label="Manga Poster Image"
                 />
                 <div className="flex flex-col ml-1" aria-label="Manga Details">
-                  <p className="font-semibold" aria-label="Manga Title">{item.title}</p>
-                  <div className="flex flex-row items-center" aria-label="Manga Metadata">
+                  <p className="font-semibold" aria-label="Manga Title">
+                    {item.title}
+                  </p>
+                  <div
+                    className="flex flex-row items-center"
+                    aria-label="Manga Metadata"
+                  >
                     {item.status && (
-                      <div className="badge badge-success gap-2 badge-outline" aria-label="Status">
+                      <div
+                        className="badge badge-success gap-2 badge-outline"
+                        aria-label="Status"
+                      >
                         {item.status}
                       </div>
                     )}
                     {item.chapters && (
-                      <div className="badge badge-info gap-2 badge-outline ml-1" aria-label="Chapters">
+                      <div
+                        className="badge badge-info gap-2 badge-outline ml-1"
+                        aria-label="Chapters"
+                      >
                         {item.chapters} chapters
                       </div>
                     )}
@@ -141,7 +176,7 @@ const Search = () => {
       </div>
     );
     setFormat(designResults);
-  };
+  }, [mangaTitle, provider]);
 
   useHotkeys("ctrl+k", (event) => {
     event.preventDefault(); // Prevent the browser's default behavior
@@ -198,8 +233,14 @@ const Search = () => {
         </svg>
       </button>
       <dialog id="my_modal_2" className="modal mt-2" aria-label="Search Modal">
-        <div className="modal-box w-full max-w-6xl p-4" aria-label="Search Modal Box">
-          <div className="flex flex-row items-center" aria-label="Search Input Container">
+        <div
+          className="modal-box w-full max-w-6xl p-4"
+          aria-label="Search Modal Box"
+        >
+          <div
+            className="flex flex-row items-center"
+            aria-label="Search Input Container"
+          >
             <input
               type="search"
               placeholder="Type here"
@@ -223,22 +264,40 @@ const Search = () => {
               title="Provider Selector"
             >
               {pathname.match(/^\/anime(\/.*)?$/) ? (
-                <option value="anime" aria-label="Anime Option">Anime</option>
+                <option value="anime" aria-label="Anime Option">
+                  Anime
+                </option>
               ) : (
                 <>
-                  <option value="mangapill" aria-label="Mangapill Option">Mangapill</option>
-                  <option value="mangaworld" aria-label="Mangaworld Option">Mangaworld</option>
-                  <option value="mangareader" aria-label="Mangareader Option">Mangareader</option>
-                  <option value="flamescans" aria-label="Flamescans Option">Flamescans</option>
-                  <option value="manganato" aria-label="Manganato Option">Manganato</option>
+                  <option value="mangapill" aria-label="Mangapill Option">
+                    Mangapill
+                  </option>
+                  <option value="mangaworld" aria-label="Mangaworld Option">
+                    Mangaworld
+                  </option>
+                  <option value="mangareader" aria-label="Mangareader Option">
+                    Mangareader
+                  </option>
+                  <option value="flamescans" aria-label="Flamescans Option">
+                    Flamescans
+                  </option>
+                  <option value="manganato" aria-label="Manganato Option">
+                    Manganato
+                  </option>
                 </>
               )}
             </select>
           </div>
           {format}
         </div>
-        <form method="dialog" className="modal-backdrop" aria-label="Close Modal Form">
-          <button aria-label="Close Modal Button" title="Close Modal Button">close</button>
+        <form
+          method="dialog"
+          className="modal-backdrop"
+          aria-label="Close Modal Form"
+        >
+          <button aria-label="Close Modal Button" title="Close Modal Button">
+            close
+          </button>
         </form>
       </dialog>
     </main>

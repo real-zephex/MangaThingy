@@ -8,7 +8,13 @@ const Navbar = async () => {
     <div className="navbar bg-base-300 z-50" aria-label="Main Navigation Bar">
       <div className="navbar-start" aria-label="Navigation Start">
         <div className="dropdown" aria-label="Dropdown Menu">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" aria-label="Menu Button" title="Menu Button">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle"
+            aria-label="Menu Button"
+            title="Menu Button"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -31,15 +37,14 @@ const Navbar = async () => {
             aria-label="Dropdown Menu List"
           >
             <LoginButton />
-            <li>
-              <Link href={"https://paypal.me/realzephex"} target="_blank" aria-label="Support my work" title="Support my work">
-                Support my work!
-              </Link>
-            </li>
           </ul>
         </div>
         <Link href={"/anime"} aria-label="Anime Page" title="Anime Page">
-          <button className="btn" aria-label="Anime Button" title="Anime Button">
+          <button
+            className="btn"
+            aria-label="Anime Button"
+            title="Anime Button"
+          >
             Anime
             <div className="hidden lg:flex items-center" aria-hidden="true">
               <kbd className="kbd kbd-sm">ctrl</kbd> +
@@ -49,7 +54,12 @@ const Navbar = async () => {
         </Link>
       </div>
       <div className="navbar-center" aria-label="Navigation Center">
-        <Link href={"/"} className="btn btn-ghost text-xl" aria-label="Home Page" title="Home Page">
+        <Link
+          href={"/"}
+          className="btn btn-ghost text-xl"
+          aria-label="Home Page"
+          title="Home Page"
+        >
           MangaThingy
         </Link>
       </div>

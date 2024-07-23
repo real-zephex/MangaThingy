@@ -26,6 +26,7 @@ const HeroSection = async ({
         alt="Manga Poster Image"
         className="border-4 border-zinc-700 rounded-md h-full w-44"
         aria-label="Manga Poster Image"
+        title={`${data.results.title} poster`}
       />
       <div className="ml-1 w-full" aria-label="Manga Details">
         <p
