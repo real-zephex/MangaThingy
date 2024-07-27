@@ -5,9 +5,8 @@ import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import LoggedInWrapper from "@/utils/logged-in-wrapper";
 
-import Head from "next/head";
-
 const inter = Lexend_Deca({ subsets: ["latin"] });
+
 const APP_NAME = "MangaThingy";
 const APP_DEFAULT_TITLE = "MangaThingy";
 const APP_TITLE_TEMPLATE = "%s - MangaThingy";
@@ -54,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="dim">
-      <Head>
+      <head>
         <meta name="google-adsense-account" content="ca-pub-7424574858811768" />
         <script
           async
