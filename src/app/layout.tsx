@@ -70,7 +70,7 @@ export default function RootLayout({
 					`,
           }}
         ></script>
-      </Head>
+      </head>
       <body className={inter.className}>
         <LoggedInWrapper>
           <Navbar />
