@@ -2,6 +2,7 @@ import Search from "./search";
 import Link from "next/link";
 import LoginButton from "./login-button";
 import ProfileIcon from "./profile-icon";
+import CurrentPage from "./curent-page";
 
 const Navbar = async () => {
   return (
@@ -39,19 +40,7 @@ const Navbar = async () => {
             <LoginButton />
           </ul>
         </div>
-        <Link href={"/anime"} aria-label="Anime Page" title="Anime Page">
-          <button
-            className="btn"
-            aria-label="Anime Button"
-            title="Anime Button"
-          >
-            Anime
-            <div className="hidden lg:flex items-center" aria-hidden="true">
-              <kbd className="kbd kbd-sm">ctrl</kbd> +
-              <kbd className="kbd kbd-sm">a</kbd>
-            </div>
-          </button>
-        </Link>
+        <CurrentPage />
       </div>
       <div className="navbar-center" aria-label="Navigation Center">
         <Link

@@ -74,7 +74,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <LoggedInWrapper>
           <Navbar />
-          <div>{children}</div>
+          {children}
         </LoggedInWrapper>
       </body>
     </html>
