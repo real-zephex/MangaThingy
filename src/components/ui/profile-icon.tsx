@@ -8,30 +8,31 @@ const ProfileIcon = () => {
 
   return (
     <main className="ml-1">
-      {session && (
-        <div
-          className="avatar hover:cursor-pointer"
-          onClick={() => {
-            const modal = document.getElementById(
-              "my_modal_3"
-            ) as HTMLDialogElement | null;
-            if (modal) {
-              modal.showModal();
-            }
-          }}
-        >
-          <div className="ring-secondary ring-offset-base-100 rounded-full ring ring-offset-2">
-            <Image
-              src={session.user?.image!}
-              alt="profile"
-              width={30}
-              height={30}
-              
-              className="rounded-full"
-            />
+      <section className="flex items-center">
+        {session && (
+          <div
+            className="avatar hover:cursor-pointer"
+            onClick={() => {
+              const modal = document.getElementById(
+                "my_modal_3"
+              ) as HTMLDialogElement | null;
+              if (modal) {
+                modal.showModal();
+              }
+            }}
+          >
+            <div className="ring-secondary ring-offset-base-100 rounded-full ring ring-offset-2">
+              <Image
+                src={session.user?.image!}
+                alt="profile"
+                width={30}
+                height={30}
+                className="rounded-full"
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </section>
       <dialog id="my_modal_3" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <form method="dialog">

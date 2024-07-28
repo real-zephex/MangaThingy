@@ -5,8 +5,8 @@ import { UserLog } from "@/database/write";
 
 const LoginDetect = () => {
   const { data: session, status } = useSession();
-  const [displayStatus, setDisplayStatus] = useState(true);
-  const [existing, setExisiting] = useState(false);
+  const [displayStatus, setDisplayStatus] = useState<boolean>(true);
+  const [existing, setExisiting] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -222,6 +222,7 @@ const ChapterSelector = ({
                 DatabaseHandler(index);
               }
             }}
+            disabled={data.results.chapters.length == 0}
             aria-label="Latest chapter button"
             title="Latest chapter button"
           >
@@ -247,7 +248,10 @@ const ChapterSelector = ({
             <button
               onClick={() => handleNavigation("next")}
               type="button"
-              disabled={selectedIndex === newData.results.chapters?.length! - 1}
+              disabled={
+                selectedIndex === newData.results.chapters?.length! - 1 ||
+                data.results.chapters.length == 0
+              }
               className="btn btn-success btn-sm w-5/12"
               aria-label="Next chapter button"
               title="Next chapter button"
@@ -283,6 +287,9 @@ const ChapterSelector = ({
           title="Image Display Section"
         >
           {showImages}
+          {data.results.chapters.length == 0 && (
+            <p>No chapters found for this media.</p>
+          )}
         </section>
       </div>
       <div
@@ -292,7 +299,10 @@ const ChapterSelector = ({
         <button
           onClick={() => handleNavigation("next")}
           type="button"
-          disabled={selectedIndex === newData.results.chapters?.length! - 1}
+          disabled={
+            selectedIndex === newData.results.chapters?.length! - 1 ||
+            data.results.chapters.length == 0
+          }
           className="btn btn-success btn-sm w-5/12"
           aria-label="Next chapter button"
           title="Next chapter button"
