@@ -15,11 +15,11 @@ const consumet = process.env.CONSUMET_URL;
 export const FlamescansPopularData = async (type: string) => {
   var url = "";
   if (type == "update") {
-    url = "https://mscrapers.vercel.app/manganato/latest/";
+    url = "https://manga-scrapers.onrender.com/manganato/latest/";
   } else if (type == "popular") {
-    url = "https://mscrapers.vercel.app/manganato/hottest/";
+    url = "https://manga-scrapers.onrender.com/manganato/hottest/";
   } else if (type == "added")
-    url = "https://mscrapers.vercel.app/manganato/newest/";
+    url = "https://manga-scrapers.onrender.com/manganato/newest/";
 
   const res = await fetch(url, { next: { revalidate: 21600 } });
   const content: FlamescansPopular = await res.json();
@@ -31,7 +31,7 @@ export const SearchMangas = async (provider: string, title: string) => {
 
   const res = await fetch(
     !manganato_condition
-      ? `https://mscrapers.vercel.app/${provider}/search/${title}`
+      ? `https://manga-scrapers.onrender.com/${provider}/search/${title}`
       : `https://manga-scrapers.onrender.com/manganato/search/${title}`,
     {
       next: { revalidate: 21600 },
@@ -43,7 +43,7 @@ export const SearchMangas = async (provider: string, title: string) => {
 
 export const MangaInfoFetcher = async (provider: string, id: string) => {
   const res = await fetch(
-    `https://mscrapers.vercel.app/${provider}/info/${id}`,
+    `https://manga-scrapers.onrender.com/${provider}/info/${id}`,
     { next: { revalidate: 21600 } }
   );
   const content: MangaInfo = await res.json();
@@ -52,7 +52,7 @@ export const MangaInfoFetcher = async (provider: string, id: string) => {
 
 export const imageFetcher = async (id: string, provider: string) => {
   const res = await fetch(
-    `https://mscrapers.vercel.app/${provider}/pages/${id}`,
+    `https://manga-scrapers.onrender.com/${provider}/pages/${id}`,
     { cache: "force-cache" }
   );
   const data = await res.json();
