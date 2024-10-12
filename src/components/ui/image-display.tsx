@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Key } from "react";
 import { ImageUrls } from "../data/types";
 
-const proxy = "https://sup-proxy.zephex0-f6c.workers.dev/api-content?url=";
+const proxy = "https://goodproxy.goodproxy.workers.dev/fetch?url=";
 
 const ImageDisplay = async (data: ImageUrls, provider: string) => {
   var mangapillCondition: boolean;
@@ -28,7 +28,7 @@ const ImageDisplay = async (data: ImageUrls, provider: string) => {
             width={1080}
             height={4000}
             key={index}
-            src={`${proxy}${item}&headers="${referer}"`}
+            src={`${proxy}${item}&ref=${referer}`}
             alt="Manga Page"
             className="w-full h-full"
             priority
