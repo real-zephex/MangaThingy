@@ -1,12 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { GogoanimeInfo } from "../data/types";
 import { useMemo } from "react";
 
-const AnimeInformation = async ({
-  animeInfo,
-}: {
-  animeInfo: GogoanimeInfo;
-}) => {
+const AnimeInformation = ({ animeInfo }: { animeInfo: GogoanimeInfo }) => {
   const info = useMemo(() => animeInfo, [animeInfo]);
 
   return (
