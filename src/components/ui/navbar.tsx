@@ -40,7 +40,14 @@ const Navbar = async () => {
             <LoginButton />
           </ul>
         </div>
-        <CurrentPage />
+        {/* <CurrentPage /> */}
+        <div>
+          <button className="btn btn-outline btn-success">
+            <Link href={"https://dramalama.netlify.app"} target="_blank">
+              Dramaflix
+            </Link>
+          </button>
+        </div>
       </div>
       <div className="navbar-center" aria-label="Navigation Center">
         <Link

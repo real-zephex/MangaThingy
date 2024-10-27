@@ -189,17 +189,17 @@ const Search = () => {
     }
   });
 
-  useHotkeys("ctrl+a", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    router.push("/anime");
-  });
+  // useHotkeys("ctrl+a", (event) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   router.push("/anime");
+  // });
 
-  useHotkeys("ctrl+m", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    router.push("/");
-  });
+  // useHotkeys("ctrl+m", (event) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   router.push("/");
+  // });
 
   return (
     <main aria-label="Search Component">
