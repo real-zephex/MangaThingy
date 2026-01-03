@@ -1,7 +1,11 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Chapter, MangaInfo, MangaInfoResults } from "@/lib/services/manga.types";
+import {
+  Chapter,
+  MangaInfo,
+  MangaInfoResults,
+} from "@/lib/services/manga.types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -16,6 +20,7 @@ import { ImageProxy } from "@/lib/services/image.proxy";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useToast } from "@/components/providers/toast-provider";
 import { ProgressTracker } from "@/lib/progress/tracker";
+import { Spinner } from "@/components/ui/spinner";
 
 const functionMap = {
   mangapill: MangapillService,
@@ -25,7 +30,7 @@ const functionMap = {
 const ChapterButton = ({
   chapter,
   provider,
-  data
+  data,
 }: {
   chapter: Chapter[];
   provider: "asurascans" | "mangapill";
@@ -42,7 +47,7 @@ const ChapterButton = ({
 
   // Preload images in background
   const preloadImages = (imageUrls: string[]) => {
-    imageUrls.forEach((url, idx) => {
+    imageUrls.forEach((url) => {
       const img = new window.Image();
       img.src = ImageProxy(url);
     });
@@ -52,10 +57,11 @@ const ChapterButton = ({
     const getEntry = tracker.getOne(data.results.id);
     if (getEntry) {
       const entries = {
-        ...getEntry, chapter
-      }
-      tracker.update(entries)
-      toast.info(`Manga ${data.results.title} has been updated.`)
+        ...getEntry,
+        chapter,
+      };
+      tracker.update(entries);
+      toast.info(`Manga ${data.results.title} has been updated.`);
     } else {
       const entries = {
         id: data.results.id,
@@ -65,11 +71,11 @@ const ChapterButton = ({
         provider,
         chapter,
         totalChapter: data.results.chapters.length.toString(),
-      }
-      tracker.addSingle(entries)
-      toast.info(`Manga ${data.results.title} has been added.`)
+      };
+      tracker.addSingle(entries);
+      toast.info(`Manga ${data.results.title} has been added.`);
     }
-  }
+  };
 
   const handleClick = async (
     e: React.MouseEvent<HTMLSpanElement>,
@@ -80,6 +86,7 @@ const ChapterButton = ({
     toast.info("Loading Chapter...", { duration: 5000 });
     try {
       const mangaPages = await functionMap[provider].getPages(id);
+      console.log(mangaPages);
       setImages(mangaPages.results);
 
       // Preload all images in background (no await)
@@ -95,44 +102,54 @@ const ChapterButton = ({
 
   return (
     <div className="flex flex-col">
+      {isLoadingChapter && (
+        <div className="fixed w-dvw h-screen flex top-0 right-0 flex-row items-center justify-center gap-2 z-50 bg-background/90 ">
+          <Spinner />
+          <p>Loading</p>
+        </div>
+      )}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 transition-all">
-        {chapter.map((i, idx) => {
-          return { ...i, index: idx }
-        }).sort((a, b) => {
-          return provider === "asurascans" ? b.index - a.index : a.index - b.index
-        }).slice(0, count).map((chap, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.01 }}
-            onClick={(e) => {
-              handleClick(e, chap.id)
-              updateProgress((index + 1).toString())
-            }}
-          >
-            <Card
+        {chapter
+          .map((i, idx) => {
+            return { ...i, index: idx };
+          })
+          .sort((a, b) => {
+            return provider === "asurascans"
+              ? b.index - a.index
+              : a.index - b.index;
+          })
+          .slice(0, count)
+          .map((chap, index) => (
+            <motion.div
               key={index}
-              className="h-full hover:border-primary/50 hover:bg-accent/30 transition-all duration-200 cursor-pointer"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.01 }}
+              onClick={(e) => {
+                handleClick(e, chap.id);
+                updateProgress((index + 1).toString());
+              }}
             >
-              <CardContent
-                className="flex flex-col justify-center h-full"
+              <Card
+                key={index}
+                className="h-full hover:border-primary/50 hover:bg-accent/30 transition-all duration-200 cursor-pointer"
               >
-                <span
-                  className="font-medium text-sm sm:text-base line-clamp-1 group-hover:text-primary transition-colors"
-                  title={chap.title}
-                >
-                  {chap.title}
-                </span>
-                {chap.date && (
-                  <span className="text-xs text-muted-foreground mt-1">
-                    {chap.date}
+                <CardContent className="flex flex-col justify-center h-full">
+                  <span
+                    className="font-medium text-sm sm:text-base line-clamp-1 group-hover:text-primary transition-colors"
+                    title={chap.title}
+                  >
+                    {chap.title}
                   </span>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+                  {chap.date && (
+                    <span className="text-xs text-muted-foreground mt-1">
+                      {chap.date}
+                    </span>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
       </div>
       {chapter.length > 20 && (
         <Button
@@ -154,7 +171,7 @@ const ChapterButton = ({
           className="w-full sm:max-w-[50vw] p-0 flex flex-col border-l border-border bg-background"
         >
           <SheetTitle>
-            <VisuallyHidden>Manga Reader</VisuallyHidden>
+            
           </SheetTitle>
 
           <div className="absolute right-12 top-4 z-50 flex gap-2">

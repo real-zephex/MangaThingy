@@ -7,7 +7,7 @@ import { ImageProxy } from "@/lib/services/image.proxy";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { BookOpen, Calendar, Layers, Play, Plus } from "lucide-react";
+import { BookOpen, Calendar, Layers, Play } from "lucide-react";
 import Link from "next/link";
 import { TrackManga } from "./tracker";
 

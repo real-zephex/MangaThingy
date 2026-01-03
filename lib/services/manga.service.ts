@@ -1,23 +1,33 @@
-"use server"
+"use server";
 
-const BASE_URL = 'https://manga-scrapers.onrender.com';
+const getBaseUrl = () => {
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+};
 
 export const fetchWrapper = async (endpoint: string) => {
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
-      next: { revalidate: 3600 }, // Hash revalidate for 1 hour
+    const baseUrl = getBaseUrl();
+    const response = await fetch(`${baseUrl}/api${endpoint}`, {
+      next: { revalidate: 3600 }, // Revalidate for 1 hour
     });
     if (!response.ok) {
-      throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
+      console.error(
+        `Fetch error for ${endpoint}: ${response.status} ${response.statusText}`,
+      );
+      return { status: response.status, results: null };
     }
-    const data = await response.json()
+    const data = await response.json();
     if (!data.results) {
-      throw new Error(`Invalid data format from ${endpoint}`);
-    };
+      console.warn(`No results returned from ${endpoint}`);
+      return { status: 200, results: null };
+    }
 
     return data;
   } catch (error) {
     console.error(`Fetch error for ${endpoint}:`, error);
-    return null;
+    return { status: 500, results: null };
   }
 };

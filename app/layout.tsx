@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider";
 import Navbar from "@/components/custom/navbar";
 import { ToastProvider } from "@/components/providers/toast-provider";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <NextTopLoader color="blue" showSpinner={false} />
           <ToastProvider>
             <Navbar />
             {children}
@@ -45,4 +47,3 @@ export default function RootLayout({
     </html>
   );
 }
-

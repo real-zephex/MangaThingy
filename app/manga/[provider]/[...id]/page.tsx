@@ -24,6 +24,33 @@ const MangaInfoPage = async ({ params }: { params: Promise<PageParams> }) => {
   const id = param.id.join("/");
 
   const mangaInfo = await functionMap[provider].getInfo(id);
+
+  if (!mangaInfo || !mangaInfo.results) {
+    return (
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="mb-6">
+          <Link href="/">
+            <Button variant="ghost" className="gap-2">
+              <MoveLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-2">Manga Not Found</h1>
+            <p className="text-muted-foreground mb-4">
+              Could not load manga information. Please try again.
+            </p>
+            <Link href="/">
+              <Button>Go Back Home</Button>
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-6">
