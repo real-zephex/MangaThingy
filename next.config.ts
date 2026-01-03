@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "goodproxy.dramaflix.workers.dev",
+        hostname: "goodproxy.goodproxy.workers.dev",
       },
     ],
     unoptimized: true,

@@ -64,12 +64,22 @@ const MangaInfoPage = async ({ params }: { params: Promise<PageParams> }) => {
 
       <MangaInfoHeader manga={mangaInfo.results} provider={provider} />
 
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold tracking-tight">Chapters</h2>
-          <span className="text-muted-foreground text-sm">
-            {mangaInfo.results.chapters.length} chapters
-          </span>
+      <div className="space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+          <div className="space-y-1">
+            <h2 className="text-3xl font-black tracking-tight">Chapters</h2>
+            <p className="text-muted-foreground font-medium">
+              Explore the latest releases and catch up on the story
+            </p>
+          </div>
+          <div className="flex items-center gap-2 bg-muted/50 px-4 py-2 rounded-xl border border-border/50">
+            <span className="text-sm font-bold text-primary">
+              {mangaInfo.results.chapters.length}
+            </span>
+            <span className="text-sm font-medium text-muted-foreground">
+              Total Chapters
+            </span>
+          </div>
         </div>
 
         <ChapterButton

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeProvider";
 import Navbar from "@/components/custom/navbar";
+import Footer from "@/components/custom/footer";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import NextTopLoader from "nextjs-toploader";
 
@@ -39,8 +40,13 @@ export default function RootLayout({
         >
           <NextTopLoader color="blue" showSpinner={false} />
           <ToastProvider>
-            <Navbar />
-            {children}
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </ToastProvider>
         </ThemeProvider>
       </body>

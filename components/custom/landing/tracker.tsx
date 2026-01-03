@@ -14,7 +14,13 @@ import { Manga } from "@/lib/services/manga.types";
 import { ProgressTracker } from "@/lib/progress/tracker";
 import { Trash } from "lucide-react";
 
-export function TrackManga({ data }: { data: Manga & { source?: string } }) {
+export function TrackManga({ 
+  data, 
+  children 
+}: { 
+  data: Manga & { source?: string },
+  children?: React.ReactNode
+}) {
   const toast = useToast();
   const [status, setStatus] = useState<string>("");
   const tracker = new ProgressTracker();
@@ -61,9 +67,11 @@ export function TrackManga({ data }: { data: Manga & { source?: string } }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm">
-          +
-        </Button>
+        {children || (
+          <Button variant="outline" size="sm">
+            +
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
