@@ -1,3 +1,5 @@
+"use client";
+
 type Progress = {
   id: string;
   title: string;
@@ -10,6 +12,7 @@ type Progress = {
 
 export class ProgressTracker {
   private getLocalStorage(): Progress[] {
+    if (typeof window === "undefined") return [];
     const store = localStorage.getItem("progress");
     if (!store) return [];
     try {
@@ -23,6 +26,7 @@ export class ProgressTracker {
 
   // sets the entire array to local storage
   private setLocalStorage(data: Progress[]): void {
+    if (typeof window === "undefined") return;
     localStorage.setItem("progress", JSON.stringify(data));
   }
 
