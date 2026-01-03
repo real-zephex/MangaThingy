@@ -1,5 +1,4 @@
 import { MangaCard } from "@/components/custom/landing/cards";
-import HeroSlider from "@/components/custom/landing/heroSlider";
 import {
   AsurascansService,
   MangapillService,
@@ -15,10 +14,7 @@ const Home = async () => {
 
   return (
     <main className="container mx-auto px-4">
-      {/* <HeroSlider
-        data={{ mangapill: mangapillNewest, asurascans: asurascansPopular }}
-      /> */}
-      {/* <hr className="bg-linear-to-r from-transparent via-white/20 to-transparent my-10" /> */}
+
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
           <div className="space-y-2 mb-6">

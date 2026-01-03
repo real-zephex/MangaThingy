@@ -5,12 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: "manga-scrapers.onrender.com",
-
-      }
-    ]
-  }
+        protocol: "https",
+        hostname: "goodproxy.dramaflix.workers.dev",
+      },
+    ],
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

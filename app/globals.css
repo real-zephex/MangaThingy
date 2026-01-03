@@ -124,3 +124,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+*::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
