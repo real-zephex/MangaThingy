@@ -6,7 +6,7 @@ import {
   MangaInfo,
   MangaInfoResults,
 } from "@/lib/services/manga.types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
@@ -15,9 +15,8 @@ import {
 } from "@/lib/services/manga.actions";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import Image from "next/image";
-import { X, Maximize2, Minimize2, Search, ArrowUpDown, Clock, Play, ArrowLeft, ArrowRight } from "lucide-react";
+import { Maximize2, Minimize2, Search, ArrowUpDown, Clock, Play } from "lucide-react";
 import { ImageProxy } from "@/lib/services/image.proxy";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useToast } from "@/components/providers/toast-provider";
 import { ProgressTracker } from "@/lib/progress/tracker";
 import { Spinner } from "@/components/ui/spinner";
@@ -48,8 +47,7 @@ const ChapterButton = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isReversed, setIsReversed] = useState(provider === "asurascans");
 
-  const [previousChapterData, setPreviousChapterData] = useState<Chapter | null>(null);
-  const [nextChapterData, setNextChapterData] = useState<Chapter | null>(null);
+
 
   const toast = useToast();
   const tracker = new ProgressTracker();
@@ -108,26 +106,7 @@ const ChapterButton = ({
     }
   };
 
-  const handleNavigationButtons = async (action: "next" | "previous") => {
-    const chapterData = action === "next" ? nextChapterData : previousChapterData;
 
-    if (!chapterData) return;
-    setIsLoadingChapter(true);
-    toast.info("Loading Chapter...", { duration: 5000 });
-    try {
-      const mangaPages = await functionMap[provider].getPages(chapterData.id);
-      setImages(mangaPages.results);
-      setCurrentChapter(chapterData.title);
-
-      // Preload all images in background (no await)
-      preloadImages(mangaPages.results);
-    } catch (error) {
-      console.error("Failed to load chapter pages:", error);
-    } finally {
-      setIsLoadingChapter(false);
-      toast.info("Chapter Loaded", { duration: 2000 });
-    }
-  }
 
   const filteredChapters = chapter
     .map((i, idx) => ({ ...i, index: idx }))
@@ -181,8 +160,6 @@ const ChapterButton = ({
               handleClick(e, chap.id);
               updateProgress((chap.index + 1).toString());
               setCurrentChapter(chap.title);
-              setNextChapterData(filteredChapters[chap.index + 1] || null);
-              setPreviousChapterData(filteredChapters[chap.index - 1] || null);
             }}
           >
             <Card className="group h-full hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border-2 bg-card/50 backdrop-blur-sm overflow-hidden relative">
@@ -254,45 +231,49 @@ const ChapterButton = ({
           <div className="w-full h-full overflow-y-auto bg-black/5 scrollbar-hide">
             <div className="flex flex-col items-center select-none py-8">
 
-              {/* Next and Previous Navigation Buttons */}
-              <div className="flex flex-row items-center justify-between p-2 w-full">
+              {/* Chapter Title Header */}
+              <div className="flex flex-row items-center justify-center p-2 w-full">
                 <p className="text-sm font-bold text-muted-foreground">
                   Reading {currentChapter}
                 </p>
-                <div className="flex lg:flex-row flex-col gap-2 ">
-                  <Button variant="ghost" className="text-sky-300 hover:text-sky-400 cursor-default active:scale-95 transition-all duration-150 font-semibold" disabled={!previousChapterData} onClick={() => handleNavigationButtons("previous")}>
-                    <ArrowLeft />
-                    Previous
-                  </Button>
-                  <Button variant="ghost" className="text-lime-300 hover:text-lime-400 cursor-default active:scale-95 transition-all duration-150 font-semibold" disabled={!nextChapterData}
-                    onClick={() => handleNavigationButtons("next")}
-                  >
-                    Next
-                    <ArrowRight />
-                  </Button>
-                </div>
               </div>
               <hr className="border-2 border-amber-200 w-full mb-2" />
               {/* Image renderer */}
               {images.length > 0 ? (
-                images.map((imageUrl, index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      "relative w-full flex justify-center transition-all duration-500",
-                      isExpanded ? "max-w-none px-0" : "max-w-3xl px-4"
-                    )}
-                  >
-                    <Image
-                      src={ImageProxy(imageUrl)}
-                      alt={`Page ${index + 1}`}
-                      width={1000}
-                      height={1500}
-                      className="w-full h-auto object-contain shadow-2xl"
-                      loading={index < 3 ? "eager" : "lazy"}
-                    />
+                <>
+                  {images.map((imageUrl, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        "relative w-full flex justify-center transition-all duration-500",
+                        isExpanded ? "max-w-none px-0" : "max-w-3xl px-4"
+                      )}
+                    >
+                      <Image
+                        src={ImageProxy(imageUrl)}
+                        alt={`Page ${index + 1}`}
+                        width={1000}
+                        height={1500}
+                        className="w-full h-auto object-contain shadow-2xl"
+                        loading={index < 3 ? "eager" : "lazy"}
+                      />
+                    </div>
+                  ))}
+                  {/* Completion message at the end */}
+                  <div className="w-full max-w-3xl px-4 py-12 mt-8">
+                    <div className="bg-card border-2 border-primary/50 rounded-2xl p-8 text-center shadow-lg">
+                      <h3 className="text-2xl font-black mb-2 text-primary">
+                        Chapter Completed! 🎉
+                      </h3>
+                      <p className="text-lg font-semibold text-foreground">
+                        You&apos;ve finished reading {currentChapter}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-4">
+                        Close this panel to select another chapter
+                      </p>
+                    </div>
                   </div>
-                ))
+                </>
               ) : (
                 <div className="flex flex-col items-center justify-center h-full space-y-4">
                   <Spinner className="w-8 h-8" />
