@@ -7,6 +7,7 @@ import Link from "next/link";
 import { MoveLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChapterButton from "@/components/custom/reader/viewPages";
+import type { Metadata, ResolvingMetadata } from 'next'
 
 type PageParams = {
   provider: "asurascans" | "mangapill";
@@ -17,6 +18,35 @@ const functionMap = {
   mangapill: MangapillService,
   asurascans: AsurascansService,
 };
+
+export async function generateMetadata({ params }: { params: Promise<PageParams> }): Promise<Metadata> {
+  const param = await params;
+  const provider = param.provider;
+  const id = param.id.join("/");
+
+  const mangaInfo = await functionMap[provider].getInfo(id);
+
+  if (mangaInfo.status !== 200 || !mangaInfo.results) {
+    return {
+      title: "Manga Not Found | Otaku Oasis",
+      description: "Could not load manga information. Please try again.",
+    };
+  }
+
+  return {
+    title: `${mangaInfo.results.title}`,
+    description: mangaInfo.results.description || "Read manga online at Otaku Oasis.",
+    openGraph: {
+      images: [
+        {
+          url: mangaInfo.results.image,
+          alt: mangaInfo.results.title,
+        },
+      ],
+    },
+
+  };
+}
 
 const MangaInfoPage = async ({ params }: { params: Promise<PageParams> }) => {
   const param = await params;

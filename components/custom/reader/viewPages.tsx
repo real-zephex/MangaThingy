@@ -6,7 +6,7 @@ import {
   MangaInfo,
   MangaInfoResults,
 } from "@/lib/services/manga.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/lib/services/manga.actions";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import Image from "next/image";
-import { X, Maximize2, Minimize2, Search, ArrowUpDown, Clock, Play } from "lucide-react";
+import { X, Maximize2, Minimize2, Search, ArrowUpDown, Clock, Play, ArrowLeft, ArrowRight } from "lucide-react";
 import { ImageProxy } from "@/lib/services/image.proxy";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useToast } from "@/components/providers/toast-provider";
@@ -41,11 +41,16 @@ const ChapterButton = ({
   const [count, setCount] = useState(24);
   const [toggled, setToggled] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [currentChapter, setCurrentChapter] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoadingChapter, setIsLoadingChapter] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isReversed, setIsReversed] = useState(provider === "asurascans");
+
+  const [previousChapterData, setPreviousChapterData] = useState<Chapter | null>(null);
+  const [nextChapterData, setNextChapterData] = useState<Chapter | null>(null);
+
   const toast = useToast();
   const tracker = new ProgressTracker();
 
@@ -103,9 +108,30 @@ const ChapterButton = ({
     }
   };
 
+  const handleNavigationButtons = async (action: "next" | "previous") => {
+    const chapterData = action === "next" ? nextChapterData : previousChapterData;
+
+    if (!chapterData) return;
+    setIsLoadingChapter(true);
+    toast.info("Loading Chapter...", { duration: 5000 });
+    try {
+      const mangaPages = await functionMap[provider].getPages(chapterData.id);
+      setImages(mangaPages.results);
+      setCurrentChapter(chapterData.title);
+
+      // Preload all images in background (no await)
+      preloadImages(mangaPages.results);
+    } catch (error) {
+      console.error("Failed to load chapter pages:", error);
+    } finally {
+      setIsLoadingChapter(false);
+      toast.info("Chapter Loaded", { duration: 2000 });
+    }
+  }
+
   const filteredChapters = chapter
     .map((i, idx) => ({ ...i, index: idx }))
-    .filter((chap) => 
+    .filter((chap) =>
       chap.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => isReversed ? b.index - a.index : a.index - b.index);
@@ -133,9 +159,9 @@ const ChapterButton = ({
             className="pl-10 h-11 rounded-xl border-2 focus-visible:ring-primary bg-background"
           />
         </div>
-        
-        <Button 
-          variant="outline" 
+
+        <Button
+          variant="outline"
           className="w-full md:w-auto rounded-xl border-2 font-bold gap-2"
           onClick={() => setIsReversed(!isReversed)}
         >
@@ -154,6 +180,9 @@ const ChapterButton = ({
             onClick={(e) => {
               handleClick(e, chap.id);
               updateProgress((chap.index + 1).toString());
+              setCurrentChapter(chap.title);
+              setNextChapterData(filteredChapters[chap.index + 1] || null);
+              setPreviousChapterData(filteredChapters[chap.index - 1] || null);
             }}
           >
             <Card className="group h-full hover:border-primary hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border-2 bg-card/50 backdrop-blur-sm overflow-hidden relative">
@@ -175,7 +204,7 @@ const ChapterButton = ({
                     {chap.title}
                   </h3>
                 </div>
-                
+
                 <div className="mt-4 flex items-center justify-end">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
                     <Play size={14} fill="currentColor" className="ml-0.5" />
@@ -224,6 +253,27 @@ const ChapterButton = ({
 
           <div className="w-full h-full overflow-y-auto bg-black/5 scrollbar-hide">
             <div className="flex flex-col items-center select-none py-8">
+
+              {/* Next and Previous Navigation Buttons */}
+              <div className="flex flex-row items-center justify-between p-2 w-full">
+                <p className="text-sm font-bold text-muted-foreground">
+                  Reading {currentChapter}
+                </p>
+                <div className="flex lg:flex-row flex-col gap-2 ">
+                  <Button variant="ghost" className="text-sky-300 hover:text-sky-400 cursor-default active:scale-95 transition-all duration-150 font-semibold" disabled={!previousChapterData} onClick={() => handleNavigationButtons("previous")}>
+                    <ArrowLeft />
+                    Previous
+                  </Button>
+                  <Button variant="ghost" className="text-lime-300 hover:text-lime-400 cursor-default active:scale-95 transition-all duration-150 font-semibold" disabled={!nextChapterData}
+                    onClick={() => handleNavigationButtons("next")}
+                  >
+                    Next
+                    <ArrowRight />
+                  </Button>
+                </div>
+              </div>
+              <hr className="border-2 border-amber-200 w-full mb-2" />
+              {/* Image renderer */}
               {images.length > 0 ? (
                 images.map((imageUrl, index) => (
                   <div
@@ -253,7 +303,7 @@ const ChapterButton = ({
           </div>
         </SheetContent>
       </Sheet>
-    </div>
+    </div >
   );
 };
 
