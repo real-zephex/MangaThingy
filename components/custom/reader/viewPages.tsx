@@ -47,8 +47,6 @@ const ChapterButton = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isReversed, setIsReversed] = useState(provider === "asurascans");
 
-
-
   const toast = useToast();
   const tracker = new ProgressTracker();
 
@@ -105,8 +103,6 @@ const ChapterButton = ({
       toast.info("Chapter Loaded", { duration: 2000 });
     }
   };
-
-
 
   const filteredChapters = chapter
     .map((i, idx) => ({ ...i, index: idx }))
