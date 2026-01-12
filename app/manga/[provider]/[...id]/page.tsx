@@ -8,6 +8,7 @@ import { MoveLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChapterButton from "@/components/custom/reader/viewPages";
 import type { Metadata, ResolvingMetadata } from 'next'
+import { ImageProxy } from "@/lib/services/image.proxy";
 
 type PageParams = {
   provider: "asurascans" | "mangapill";
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<PageParams>
     openGraph: {
       images: [
         {
-          url: mangaInfo.results.image,
+          url: ImageProxy(mangaInfo.results.image),
           alt: mangaInfo.results.title,
         },
       ],
