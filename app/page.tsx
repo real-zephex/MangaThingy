@@ -1,12 +1,12 @@
 import { MangaCard } from "@/components/custom/landing/cards";
 import HeroSlider from "@/components/custom/landing/heroSlider";
+import { Button } from "@/components/ui/button";
 import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
 import { ChevronRight, Sparkles, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 const Home = async () => {
   const [mangapillNewest, asurascansPopular, asurascansLatest] =

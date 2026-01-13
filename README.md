@@ -1,4 +1,4 @@
-# MangaThingy - Manga Reader Platform
+# Otaku Verse - Manga Reader Platform
 
 A modern, full-stack manga reading platform built with Next.js, TypeScript, and integrated web scrapers. Browse, search, and read manga from multiple sources with a sleek dark-themed interface.
 
@@ -57,18 +57,21 @@ new-manga-site/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ or Bun
 - npm, yarn, pnpm, or bun package manager
 
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd new-manga-site
 ```
 
 2. **Install dependencies**
+
 ```bash
 bun install
 # or
@@ -76,6 +79,7 @@ npm install
 ```
 
 3. **Run the development server**
+
 ```bash
 bun run dev
 # or
@@ -83,11 +87,12 @@ npm run dev
 ```
 
 4. **Open in browser**
-Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📚 Available API Endpoints
 
 ### Mangapill
+
 - `GET /api/mangapill/search/:query` - Search manga
 - `GET /api/mangapill/info/:id` - Get manga details
 - `GET /api/mangapill/pages/:id` - Get chapter pages
@@ -96,6 +101,7 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 - `GET /api/mangapill/images/:imageUrl` - Proxy images
 
 ### Asurascans
+
 - `GET /api/asurascans/search/:query` - Search manga
 - `GET /api/asurascans/info/:id` - Get manga details
 - `GET /api/asurascans/pages/:id` - Get chapter pages
@@ -111,13 +117,13 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 Use the type-safe API client in React components:
 
 ```typescript
-import { scrapersAPI } from '@/lib/api-client';
+import { scrapersAPI } from "@/lib/api-client";
 
 // Search manga
-const results = await scrapersAPI.mangapill.search('naruto');
+const results = await scrapersAPI.mangapill.search("naruto");
 
 // Get manga info
-const info = await scrapersAPI.mangapill.info('/manga/12/solo-leveling');
+const info = await scrapersAPI.mangapill.info("/manga/12/solo-leveling");
 
 // Get chapter pages
 const pages = await scrapersAPI.mangapill.pages(chapterId);
@@ -128,7 +134,7 @@ const pages = await scrapersAPI.mangapill.pages(chapterId);
 Fetch data directly in server components:
 
 ```typescript
-import { MangapillService } from '@/lib/services/manga.actions';
+import { MangapillService } from "@/lib/services/manga.actions";
 
 export default async function MangaPage() {
   const manga = await MangapillService.getNewest();
@@ -136,20 +142,10 @@ export default async function MangaPage() {
 }
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-
-No environment variables required for development. For production on Vercel, the system automatically detects the environment and constructs proper URLs.
-
-### Cache Settings
-
-- ISR (Incremental Static Regeneration): 1 hour revalidation
-- Images: 24-hour browser cache
-
 ## 🏗 Building for Production
 
 ### Build
+
 ```bash
 bun run build
 # or
@@ -157,48 +153,18 @@ npm run build
 ```
 
 ### Start Production Server
+
 ```bash
 bun run start
 # or
 npm run start
 ```
 
-### Deploy to Vercel
-
-The easiest way to deploy is using [Vercel](https://vercel.com):
-
-1. Push your code to GitHub
-2. Import project in Vercel dashboard
-3. Deploy automatically with zero configuration
-
-The API routes and scrapers work seamlessly on Vercel's serverless infrastructure.
-
 ## 📖 Documentation
 
 For detailed API documentation and examples, see:
-- **[SCRAPER_API_DOCUMENTATION.md](./SCRAPER_API_DOCUMENTATION.md)** - Complete API reference
-- **[SCRAPER_QUICK_START.md](./SCRAPER_QUICK_START.md)** - Quick start with code examples
-- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Technical implementation details
-- **[API_INTEGRATION_COMPLETE.md](./API_INTEGRATION_COMPLETE.md)** - Integration status and features
 
-## 🐛 Troubleshooting
-
-### Port Already in Use
-```bash
-# Kill process on port 3000
-lsof -ti:3000 | xargs kill -9
-```
-
-### Build Timeout
-The first build may take longer due to homepage prerendering. This is normal.
-
-### Manga Not Found
-Verify the manga exists on the source website. Some manga may be removed or the website structure may change.
-
-### Image Loading Issues
-- Ensure image URL is properly encoded
-- Check network tab for CORS errors
-- Verify the original image is still accessible
+- **[SCRAPER_DOCS.md](./SCRAPER_DOCS.md)** - Integration status and features
 
 ## 🔄 URL Encoding
 
@@ -206,7 +172,7 @@ The API automatically handles special characters in IDs (slashes, spaces, etc.):
 
 ```typescript
 // Works automatically - no manual encoding needed
-const manga = await scrapersAPI.mangapill.info('/manga/12/solo-leveling');
+const manga = await scrapersAPI.mangapill.info("/manga/12/solo-leveling");
 ```
 
 ## 📝 Development Notes
@@ -228,21 +194,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [Mangapill](https://mangapill.com) - Manga source
 - [Asurascans](https://asurascans.io) - Webtoon/Manga source
-
-## ⚠️ Legal Notice
-
-This project is for educational purposes. The scraping functionality respects robots.txt and rate limits. Please check the target websites' terms of service before using.
-
-## 📞 Support
-
-For issues, questions, or suggestions, please create an issue in the GitHub repository.
-
-## 🚀 Performance Optimization
-
-- **ISR**: Pages revalidate every hour to keep data fresh
-- **Image Optimization**: Next.js Image component with lazy loading
-- **Code Splitting**: Automatic route-based code splitting
-- **Caching**: API responses cached with ISR strategy
 
 ## 🎨 Customization
 

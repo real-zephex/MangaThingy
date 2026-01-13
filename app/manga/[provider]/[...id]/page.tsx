@@ -1,14 +1,14 @@
+import { MangaInfoHeader } from "@/components/custom/info/manga-info-header";
+import ChapterButton from "@/components/custom/reader/viewPages";
+import { Button } from "@/components/ui/button";
+import { ImageProxy } from "@/lib/services/image.proxy";
 import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
-import { MangaInfoHeader } from "@/components/custom/info/manga-info-header";
-import Link from "next/link";
 import { MoveLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import ChapterButton from "@/components/custom/reader/viewPages";
-import type { Metadata, ResolvingMetadata } from 'next'
-import { ImageProxy } from "@/lib/services/image.proxy";
+import type { Metadata } from 'next';
+import Link from "next/link";
 
 type PageParams = {
   provider: "asurascans" | "mangapill";

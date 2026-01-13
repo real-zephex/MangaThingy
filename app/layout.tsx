@@ -1,11 +1,12 @@
+import Footer from "@/components/custom/footer";
+import Navbar from "@/components/custom/navbar";
+import { ToastProvider } from "@/components/providers/toast-provider";
+import { ThemeProvider } from "@/components/themeProvider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/themeProvider";
-import Navbar from "@/components/custom/navbar";
-import Footer from "@/components/custom/footer";
-import { ToastProvider } from "@/components/providers/toast-provider";
 import NextTopLoader from "nextjs-toploader";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <GoogleAnalytics gaId="G-WSQFR03XW0" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

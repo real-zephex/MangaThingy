@@ -1,10 +1,10 @@
+import { Asurascans } from "@/lib/scrapers/asurascans";
+import { Mangapill } from "@/lib/scrapers/mangapill";
+import axios from "axios";
 import { Hono } from "hono";
-import { handle } from "hono/vercel";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import axios from "axios";
-import { Mangapill } from "@/lib/scrapers/mangapill";
-import { Asurascans } from "@/lib/scrapers/asurascans";
+import { handle } from "hono/vercel";
 
 const app = new Hono().basePath("/api");
 app.use("*", cors(), logger());
