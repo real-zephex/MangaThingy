@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ModeToggle } from "../toggle";
 import SearchManga from "./search";
-import { BookOpen, Home, Compass, Github, Library, Menu } from "lucide-react";
+import { BookOpen, Home, Compass, Github, Library, Menu, GitBranchPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import {
@@ -14,6 +14,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton } from "@clerk/nextjs";
+import { ButtonGroup } from "../ui/button-group";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -25,7 +27,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
@@ -63,15 +65,35 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <SearchManga />
 
-          <div className="flex items-center gap-1 border-l pl-2 ml-1">
+          <div className="flex items-center gap-2 border-l pl-2 ml-1">
             <Link
               href="https://github.com/real-zephex/MangaThingy"
               target="_blank"
               className="p-2 text-muted-foreground hover:text-primary transition-colors hidden sm:flex"
             >
-              <Github className="w-5 h-5" />
+              <GitBranchPlus className="w-5 h-5" />
+
             </Link>
             <ModeToggle />
+            <div className="flex flex-row items-center">
+              <SignedOut>
+                <ButtonGroup>
+                  <SignInButton>
+                    <Button variant="secondary" size="sm">
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton>
+                    <Button variant="outline" size="sm" >
+                      Sign Up
+                    </Button>
+                  </SignUpButton>
+                </ButtonGroup>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
 
             <div className="md:hidden ml-1">
               <Sheet>
@@ -80,7 +102,7 @@ const Navbar = () => {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetContent side="right" className="w-75 sm:w-100">
                   <SheetHeader>
                     <SheetTitle className="flex items-center gap-2 text-left">
                       <div className="p-1.5 bg-linear-to-br from-orange-500 to-pink-500 rounded-lg">
@@ -115,7 +137,7 @@ const Navbar = () => {
                       target="_blank"
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-muted-foreground hover:bg-muted"
                     >
-                      <Github className="w-5 h-5" />
+                      <GitBranchPlus className="w-5 h-5" />
                       GitHub Repository
                     </Link>
                   </div>
