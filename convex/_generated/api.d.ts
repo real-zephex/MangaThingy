@@ -10,6 +10,7 @@
 
 import type * as functions_mutations from "../functions/mutations.js";
 import type * as functions_query from "../functions/query.js";
+import type * as functions_retrieve from "../functions/retrieve.js";
 import type * as types_index from "../types/index.js";
 
 import type {
@@ -21,6 +22,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   "functions/mutations": typeof functions_mutations;
   "functions/query": typeof functions_query;
+  "functions/retrieve": typeof functions_retrieve;
   "types/index": typeof types_index;
 }>;
 

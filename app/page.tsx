@@ -1,12 +1,10 @@
 import { MangaCard } from "@/components/custom/landing/cards";
 import HeroSlider from "@/components/custom/landing/heroSlider";
-import { ManageSync } from "@/components/custom/syncManage";
 import { Button } from "@/components/ui/button";
 import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
-import { currentUser } from "@clerk/nextjs/server";
 import { ChevronRight, Sparkles, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 
@@ -17,11 +15,9 @@ const Home = async () => {
       AsurascansService.getPopular(),
       AsurascansService.getLatest(),
     ]);
-  const user = await currentUser();
 
   return (
     <main className="container mx-auto px-4 py-8 space-y-12">
-      <ManageSync userId={user?.id} />
       <section>
         <HeroSlider
           data={{ mangapill: mangapillNewest, asurascans: asurascansPopular }}

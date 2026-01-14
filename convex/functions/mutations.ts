@@ -1,5 +1,5 @@
 import { mutation } from "../_generated/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { trackObject } from "../types";
 
 export const syncReadingHistory = mutation({
@@ -37,8 +37,8 @@ export const syncReadingHistory = mutation({
 
       return results;
     } catch (error) {
-      const errorMessage = (error as Error).message;
-      throw new Error(`Error syncing reading history: ${errorMessage}`);
+      console.error(error);
+      throw new ConvexError(`Error syncing reading history: ${(error as Error).message}`);
     }
   },
 });

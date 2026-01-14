@@ -3,7 +3,17 @@
 import Link from "next/link";
 import { ModeToggle } from "../toggle";
 import SearchManga from "./search";
-import { BookOpen, Home, Compass, Github, Library, Menu, GitBranchPlus } from "lucide-react";
+import {
+  BookOpen,
+  Home,
+  Compass,
+  Library,
+  Menu,
+  GitBranchPlus,
+  InfoIcon,
+  UploadIcon,
+  ImportIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import {
@@ -14,17 +24,40 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton } from "@clerk/nextjs";
+import {
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  UserButton,
+} from "@clerk/nextjs";
 import { ButtonGroup } from "../ui/button-group";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { useTracking } from "@/providers/TrackingProvider";
 
 const Navbar = () => {
   const pathname = usePathname();
-
   const navLinks = [
     { name: "Home", href: "/", icon: Home },
     { name: "Browse", href: "/browse", icon: Compass },
     { name: "Library", href: "/library", icon: Library },
   ];
+  const syncTracking = useTracking();
+
+  const importData = () => {
+    syncTracking.provider.syncToLocal();
+  };
+
+  const exportData = () => {
+    syncTracking.provider.syncAll();
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -35,7 +68,10 @@ const Navbar = () => {
               <BookOpen className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-xl font-bold tracking-tight hidden sm:block">
-              Otaku <span className="bg-linear-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">Oasis</span>
+              Otaku{" "}
+              <span className="bg-linear-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+                Oasis
+              </span>
             </h2>
           </Link>
 
@@ -51,7 +87,7 @@ const Navbar = () => {
                     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive
                       ? "bg-primary/10 text-primary shadow-sm"
-                      : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/5",
                   )}
                 >
                   <Icon className="w-4 h-4" />
@@ -72,10 +108,9 @@ const Navbar = () => {
               className="p-2 text-muted-foreground hover:text-primary transition-colors hidden sm:flex"
             >
               <GitBranchPlus className="w-5 h-5" />
-
             </Link>
             <ModeToggle />
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row items-center gap-2">
               <SignedOut>
                 <ButtonGroup>
                   <SignInButton>
@@ -84,7 +119,7 @@ const Navbar = () => {
                     </Button>
                   </SignInButton>
                   <SignUpButton>
-                    <Button variant="outline" size="sm" >
+                    <Button variant="outline" size="sm">
                       Sign Up
                     </Button>
                   </SignUpButton>
@@ -92,6 +127,41 @@ const Navbar = () => {
               </SignedOut>
               <SignedIn>
                 <UserButton />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      Actions
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Sync Settings</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="flex flex-row items-center gap-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        importData();
+                      }}
+                    >
+                      <ImportIcon />
+                      <p> Import from database</p>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="flex flex-row items-center gap-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        exportData();
+                      }}
+                    >
+                      <UploadIcon />
+                      <p>Export to database</p>
+                    </DropdownMenuItem>
+                    <div className="flex flex-row items-center px-2 py-1 gap-2 w-50">
+                      <InfoIcon className="h-3 w-3" />
+                      <p className="text-xs font-mono">2 minutes interval.</p>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </SignedIn>
             </div>
 
@@ -123,7 +193,7 @@ const Navbar = () => {
                             "flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all",
                             isActive
                               ? "bg-primary text-primary-foreground shadow-md"
-                              : "text-muted-foreground hover:bg-muted"
+                              : "text-muted-foreground hover:bg-muted",
                           )}
                         >
                           <Icon className="w-5 h-5" />

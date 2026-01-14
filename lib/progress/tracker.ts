@@ -25,7 +25,7 @@ export class ProgressTracker {
   }
 
   // sets the entire array to local storage
-  private setLocalStorage(data: Progress[]): void {
+  setLocalStorage(data: Progress[]): void {
     if (typeof window === "undefined") return;
     localStorage.setItem("progress", JSON.stringify(data));
   }
