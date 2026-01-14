@@ -19,7 +19,14 @@ import {
 } from "@/lib/services/manga.types";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ArrowUpDown, Clock, Maximize2, Minimize2, Play, Search } from "lucide-react";
+import {
+  ArrowUpDown,
+  Clock,
+  Maximize2,
+  Minimize2,
+  Play,
+  Search,
+} from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -107,11 +114,13 @@ const ChapterButton = ({
   const filteredChapters = chapter
     .map((i, idx) => ({ ...i, index: idx }))
     .filter((chap) =>
-      chap.title.toLowerCase().includes(searchQuery.toLowerCase())
+      chap.title.toLowerCase().includes(searchQuery.toLowerCase()),
     )
-    .sort((a, b) => isReversed ? b.index - a.index : a.index - b.index);
+    .sort((a, b) => (isReversed ? b.index - a.index : a.index - b.index));
 
-  const displayedChapters = toggled ? filteredChapters : filteredChapters.slice(0, count);
+  const displayedChapters = toggled
+    ? filteredChapters
+    : filteredChapters.slice(0, count);
 
   return (
     <div className="flex flex-col space-y-6">
@@ -119,7 +128,9 @@ const ChapterButton = ({
         <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 z-50 bg-background/80 backdrop-blur-sm">
           <div className="p-4 bg-card rounded-2xl shadow-2xl border border-border flex flex-col items-center gap-4">
             <Spinner className="w-10 h-10 text-primary" />
-            <p className="font-bold text-lg animate-pulse">Summoning Pages...</p>
+            <p className="font-bold text-lg animate-pulse">
+              Summoning Pages...
+            </p>
           </div>
         </div>
       )}
@@ -154,7 +165,7 @@ const ChapterButton = ({
             transition={{ delay: Math.min(index * 0.02, 0.5) }}
             onClick={(e) => {
               handleClick(e, chap.id);
-              updateProgress((chap.index + 1).toString());
+              updateProgress((index + 1).toString());
               setCurrentChapter(chap.title);
             }}
           >
@@ -164,7 +175,7 @@ const ChapterButton = ({
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">
-                      Chapter {chap.index + 1}
+                      Chapter {index + 1}
                     </span>
                     {chap.date && (
                       <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
@@ -197,7 +208,9 @@ const ChapterButton = ({
             setToggled(!toggled);
           }}
         >
-          {toggled ? "Show Less" : `View All ${filteredChapters.length} Chapters`}
+          {toggled
+            ? "Show Less"
+            : `View All ${filteredChapters.length} Chapters`}
         </Button>
       )}
 
@@ -237,7 +250,7 @@ const ChapterButton = ({
                     key={index}
                     className={cn(
                       "relative w-full flex justify-center transition-all duration-500",
-                      isExpanded ? "max-w-none px-0" : "max-w-3xl px-4"
+                      isExpanded ? "max-w-none px-0" : "max-w-3xl px-4",
                     )}
                   >
                     <Image
@@ -253,7 +266,9 @@ const ChapterButton = ({
               ) : (
                 <div className="flex flex-col items-center justify-center h-full space-y-4">
                   <Spinner className="w-8 h-8" />
-                  <p className="text-muted-foreground font-medium">Loading pages...</p>
+                  <p className="text-muted-foreground font-medium">
+                    Loading pages...
+                  </p>
                 </div>
               )}
             </div>
@@ -266,7 +281,7 @@ const ChapterButton = ({
           </div>
         </SheetContent>
       </Sheet>
-    </div >
+    </div>
   );
 };
 

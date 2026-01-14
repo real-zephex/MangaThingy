@@ -9,7 +9,7 @@
  */
 
 import type * as functions_mutations from "../functions/mutations.js";
-import type * as functions_quer../schema.jsnctions/query.js";
+import type * as functions_query from "../functions/query.js";
 import type * as types_index from "../types/index.js";
 
 import type {
