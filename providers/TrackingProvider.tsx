@@ -99,7 +99,6 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const id = setInterval(() => {
-      alert("Commenced")
       syncAll();
     }, 2.1 * 60 * 1000);
 
