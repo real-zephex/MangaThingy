@@ -8,6 +8,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+import { ConvexClientProvider } from "@/providers/ClerkClientProvider";
+import { TrackingProvider } from "@/providers/TrackingProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,25 +43,30 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NextTopLoader color="blue" showSpinner={false} />
-            <ToastProvider>
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="grow">
-                  {children}
-                </main>
-                <Footer />
-              </div>
-            </ToastProvider>
-          </ThemeProvider>
-        </ClerkProvider>
+        <ConvexClientProvider>
+          <ClerkProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NextTopLoader color="blue" showSpinner={false} />
+
+              <ToastProvider>
+                <TrackingProvider>
+                  <div className="flex flex-col min-h-screen">
+                    <Navbar />
+                    <main className="grow">
+                      {children}
+                    </main>
+                    <Footer />
+                  </div>
+                </TrackingProvider>
+              </ToastProvider>
+            </ThemeProvider>
+          </ClerkProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );

@@ -1,10 +1,12 @@
 import { MangaCard } from "@/components/custom/landing/cards";
 import HeroSlider from "@/components/custom/landing/heroSlider";
+import { ManageSync } from "@/components/custom/syncManage";
 import { Button } from "@/components/ui/button";
 import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
+import { currentUser } from "@clerk/nextjs/server";
 import { ChevronRight, Sparkles, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 
@@ -15,11 +17,15 @@ const Home = async () => {
       AsurascansService.getPopular(),
       AsurascansService.getLatest(),
     ]);
+  const user = await currentUser();
 
   return (
     <main className="container mx-auto px-4 py-8 space-y-12">
+      <ManageSync userId={user?.id} />
       <section>
-        <HeroSlider data={{ mangapill: mangapillNewest, asurascans: asurascansPopular }} />
+        <HeroSlider
+          data={{ mangapill: mangapillNewest, asurascans: asurascansPopular }}
+        />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
@@ -30,13 +36,18 @@ const Home = async () => {
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-orange-500">
                   <TrendingUp size={20} />
-                  <span className="text-xs font-bold uppercase tracking-wider">Trending Now</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">
+                    Trending Now
+                  </span>
                 </div>
                 <h2 className="text-3xl font-black tracking-tight">
                   Popular <span className="text-primary">Mangas</span>
                 </h2>
               </div>
-              <Link href="/browse" className="text-sm font-bold flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
+              <Link
+                href="/browse"
+                className="text-sm font-bold flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+              >
                 View All <ChevronRight size={16} />
               </Link>
             </div>
@@ -57,7 +68,9 @@ const Home = async () => {
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-pink-500">
                   <Sparkles size={20} />
-                  <span className="text-xs font-bold uppercase tracking-wider">Handpicked for you</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">
+                    Handpicked for you
+                  </span>
                 </div>
                 <h2 className="text-3xl font-black tracking-tight">
                   Featured <span className="text-primary">Series</span>
@@ -83,7 +96,9 @@ const Home = async () => {
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-yellow-500">
                   <Zap size={20} />
-                  <span className="text-xs font-bold uppercase tracking-wider">Fresh Updates</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">
+                    Fresh Updates
+                  </span>
                 </div>
                 <h2 className="text-2xl font-black tracking-tight">
                   Latest <span className="text-primary">Releases</span>
@@ -100,7 +115,10 @@ const Home = async () => {
               ))}
             </div>
 
-            <Button variant="outline" className="w-full mt-6 font-bold border-2">
+            <Button
+              variant="outline"
+              className="w-full mt-6 font-bold border-2"
+            >
               Load More Updates
             </Button>
           </div>
