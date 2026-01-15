@@ -13,6 +13,7 @@ import {
   InfoIcon,
   UploadIcon,
   ImportIcon,
+  MenuIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -129,8 +130,8 @@ const Navbar = () => {
                 <UserButton />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      Actions
+                    <Button variant="secondary" size="sm">
+                      <MenuIcon />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>

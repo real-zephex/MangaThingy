@@ -18,6 +18,9 @@ import { useToast } from "@/components/providers/toast-provider";
 import { useState, useEffect } from "react";
 import { Trash2, Bookmark, PlayCircle, CheckCircle2, PauseCircle, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { api } from "@/convex/_generated/api";
+import { useAuth } from "@clerk/nextjs";
+import { useMutation } from "convex/react";
 
 interface MangaStatusDropdownProps {
   manga: MangaInfo;
@@ -35,6 +38,8 @@ export function MangaStatusDropdown({ manga, provider }: MangaStatusDropdownProp
   const toast = useToast();
   const [status, setStatus] = useState<string>("");
   const tracker = new ProgressTracker();
+  const { isLoaded, isSignedIn, userId } = useAuth();
+  const mutate = useMutation(api.functions.mutations.deleteReadingHistory);
 
   useEffect(() => {
     const result = tracker.getOne(manga.id);
@@ -43,11 +48,18 @@ export function MangaStatusDropdown({ manga, provider }: MangaStatusDropdownProp
     }
   }, [manga.id]);
 
-  const handleStatusChange = (value: string) => {
+  const handleStatusChange = async (value: string) => {
     if (value === "untrack") {
       tracker.remove(manga.id);
       setStatus("");
       toast.success(`Manga ${manga.title} has been untracked`);
+
+      if (isLoaded && isSignedIn && userId) {
+        const result = await mutate({ user_id: userId, manga_id: manga.id });
+        if (result.success) {
+          toast.info(`Manga ${manga.title} has been removed from your tracking list in db.`);
+        }
+      }
       return;
     }
 
@@ -76,11 +88,11 @@ export function MangaStatusDropdown({ manga, provider }: MangaStatusDropdownProp
 
   return (
     <Select value={status} onValueChange={handleStatusChange}>
-      <SelectTrigger 
+      <SelectTrigger
         className={cn(
           "w-full sm:w-56 h-12 rounded-xl border-2 font-bold text-base transition-all duration-300",
-          status 
-            ? "bg-primary text-primary-foreground border-primary hover:opacity-90" 
+          status
+            ? "bg-primary text-primary-foreground border-primary hover:opacity-90"
             : "bg-background border-border hover:border-primary/50"
         )}
       >
@@ -93,8 +105,8 @@ export function MangaStatusDropdown({ manga, provider }: MangaStatusDropdownProp
         {Object.entries(statusConfig).map(([key, config]) => {
           const Icon = config.icon;
           return (
-            <SelectItem 
-              key={key} 
+            <SelectItem
+              key={key}
               value={key}
               className="rounded-lg focus:bg-accent cursor-pointer py-2.5"
             >
@@ -110,8 +122,8 @@ export function MangaStatusDropdown({ manga, provider }: MangaStatusDropdownProp
         {status && (
           <>
             <div className="h-px bg-border my-1 mx-1" />
-            <SelectItem 
-              value="untrack" 
+            <SelectItem
+              value="untrack"
               className="rounded-lg focus:bg-destructive/10 focus:text-destructive cursor-pointer py-2.5 text-destructive"
             >
               <div className="flex items-center gap-3">

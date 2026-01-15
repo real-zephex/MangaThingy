@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useEffect } from "react";
+import { createContext, ReactNode, useContext, useEffect, useCallback, useMemo } from "react";
 
 import { useToast } from "@/components/providers/toast-provider";
 import { api } from "@/convex/_generated/api";
@@ -21,7 +21,7 @@ const TrackingContext = createContext<TrackingContextType | undefined>(
 );
 
 export const TrackingProvider = ({ children }: { children: ReactNode }) => {
-  const tracker = new ProgressTracker();
+  const tracker = useMemo(() => new ProgressTracker(), []);
   const mutate = useMutation(api.functions.mutations.syncReadingHistory);
   const toast = useToast();
   const { isLoaded, isSignedIn, userId } = useAuth();
@@ -30,9 +30,9 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
     userId ? { user_id: userId } : "skip",
   );
 
-  const syncAll = async () => {
+  const syncAll = useCallback(async (isAutoSync = false) => {
     if (!userId || !isLoaded || !isSignedIn) {
-      toast.info("Sync not available for guest users.");
+      if (!isAutoSync) toast.info("Sync not available for guest users.");
       return;
     }
 
@@ -64,9 +64,9 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
       console.error(error);
       toast.error("Error syncing reading history: " + (error as Error).message);
     }
-  };
+  }, [userId, isLoaded, isSignedIn, mutate, tracker, toast]);
 
-  const syncToLocal = async () => {
+  const syncToLocal = useCallback(async () => {
     if (!userId || !isLoaded || !isSignedIn) {
       toast.info("Sync not available for guest users.");
       return;
@@ -94,18 +94,25 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
     }));
     tracker.setLocalStorage(sanitizedHistory);
     toast.success("Sync to local successful.");
-  };
+  }, [userId, isLoaded, isSignedIn, historyData, tracker, toast]);
 
 
   useEffect(() => {
+    if (!isSignedIn || !isLoaded) return;
+
     const id = setInterval(() => {
-      syncAll();
+      syncAll(true);
     }, 2.1 * 60 * 1000);
 
     return () => clearInterval(id);
-  }, [])
+  }, [isSignedIn, isLoaded, syncAll]);
+
+  const providerValue = useMemo(() => ({
+    provider: { syncAll, syncToLocal }
+  }), [syncAll, syncToLocal]);
+
   return (
-    <TrackingContext.Provider value={{ provider: { syncAll, syncToLocal } }}>
+    <TrackingContext.Provider value={providerValue}>
       {children}
     </TrackingContext.Provider>
   );

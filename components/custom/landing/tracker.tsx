@@ -13,17 +13,23 @@ import { useState, useEffect } from "react";
 import { Manga } from "@/lib/services/manga.types";
 import { ProgressTracker } from "@/lib/progress/tracker";
 import { Trash } from "lucide-react";
+import { useAuth } from "@clerk/nextjs";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
-export function TrackManga({ 
-  data, 
-  children 
-}: { 
+export function TrackManga({
+  data,
+  children
+}: {
   data: Manga & { source?: string },
   children?: React.ReactNode
 }) {
   const toast = useToast();
   const [status, setStatus] = useState<string>("");
   const tracker = new ProgressTracker();
+
+  const { isLoaded, isSignedIn, userId } = useAuth();
+  const mutate = useMutation(api.functions.mutations.deleteReadingHistory);
 
   function existenceCheck() {
     return tracker.getOne(data.id);
@@ -58,9 +64,17 @@ export function TrackManga({
     toast.info(`Manga ${data.title} has been marked as ${e}`);
   }
 
-  function deleteItem() {
+  async function deleteItem() {
     tracker.remove(data.id);
     setStatus("");
+
+    if (isLoaded && isSignedIn && userId) {
+      const result = await mutate({ user_id: userId, manga_id: data.id });
+      if (result.success) {
+        toast.info(`Manga ${data.title} has been removed from your tracking list in db.`);
+      }
+    }
+
     toast.success(`Manga ${data.title} has been untracked`);
   }
 

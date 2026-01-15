@@ -43,13 +43,13 @@ export const MangaCard = ({ manga, variant = "default" }: MangaCardProps) => {
             />
             <div className="absolute inset-0 bg-linear-to-t from-background/90 via-background/20 to-transparent opacity-60"></div>
 
-            <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
+            {/* <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
               {manga.source && (
                 <Badge className={cn("text-[10px] px-1.5 py-0 h-5 uppercase font-bold border-none text-white", sourceColor)}>
                   {manga.source}
                 </Badge>
               )}
-            </div>
+            </div> */}
 
             {manga.status && (
               <Badge className="absolute top-2 right-2 bg-primary/90 hover:bg-primary flex items-center gap-1 z-20">
@@ -92,7 +92,7 @@ export const MangaCard = ({ manga, variant = "default" }: MangaCardProps) => {
         viewport={{ once: true }}
       >
         <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 bg-card border-border group select-none relative">
-          <div className="relative h-[450px] overflow-hidden">
+          <div className="relative h-112.5 overflow-hidden">
             <Image
               src={ImageProxy(manga.image || manga.images)}
               alt={manga.title}
@@ -101,13 +101,13 @@ export const MangaCard = ({ manga, variant = "default" }: MangaCardProps) => {
             />
             <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent"></div>
 
-            <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+            {/* <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
               {manga.source && (
                 <Badge className={cn("text-xs px-2 py-0.5 uppercase font-bold border-none text-white shadow-lg", sourceColor)}>
                   {manga.source}
                 </Badge>
               )}
-            </div>
+            </div> */}
 
             <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4 z-20">
               <div className="space-y-2">
@@ -177,13 +177,13 @@ export const MangaCard = ({ manga, variant = "default" }: MangaCardProps) => {
           />
           <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-80"></div>
 
-          <div className="absolute top-3 left-3 flex flex-col gap-2 z-30">
+          {/* <div className="absolute top-3 left-3 flex flex-col gap-2 z-30">
             {manga.source && (
               <Badge className={cn("text-[10px] px-2 py-0.5 uppercase font-bold border-none text-white shadow-md", sourceColor)}>
                 {manga.source}
               </Badge>
             )}
-          </div>
+          </div> */}
 
           {manga.status && (
             <Badge className="absolute top-3 right-3 bg-primary/90 hover:bg-primary flex items-center gap-1 z-30 shadow-md">
