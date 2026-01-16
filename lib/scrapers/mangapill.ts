@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { ScraperResponse, MangaSearchResult, MangaInfo } from "./types";
 
 export class Mangapill {
-  private proxyUrl = "https://goodproxy.dramaflix.workers.dev/fetch?url=";
+  private proxyUrl = "https://goodproxy.goodproxy.workers.dev/fetch?url=";
   private parentUrl = "https://mangapill.com";
 
   async search(query: string): Promise<ScraperResponse<MangaSearchResult[]>> {
