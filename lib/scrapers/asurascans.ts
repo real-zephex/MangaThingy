@@ -7,7 +7,7 @@ import {
 } from "./types";
 
 export class Asurascans {
-  private proxyUrl = "https://sup-proxy.zephex0-f6c.workers.dev/api-text?url=";
+  private proxyUrl = "https://goodproxy.goodproxy.workers.dev/fetch?url=";
   private parentUrl = "https://asurascans.io";
 
   async search(
