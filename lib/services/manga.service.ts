@@ -3,9 +3,12 @@
 export const fetchWrapper = async (endpoint: string) => {
   try {
     // const baseUrl = getBaseUrl();
-    const response = await fetch(`https://otakuoasis.online/api${endpoint}`, {
-      next: { revalidate: 3600 }, // Revalidate for 1 hour
-    });
+    const response = await fetch(
+      `https://manga-thingy.vercel.app/api${endpoint}`,
+      {
+        next: { revalidate: 3600 }, // Revalidate for 1 hour
+      },
+    );
     if (!response.ok) {
       console.error(
         `Fetch error for ${endpoint}: ${response.status} ${response.statusText}`,
