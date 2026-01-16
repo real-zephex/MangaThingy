@@ -16,7 +16,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center gap-2">
+    <div className="w-dvw h-dvh flex flex-col items-center gap-2">
       <div className="flex flex-row items-center gap-2">
         <AlertCircleIcon />
         <h2>Something went wrong!</h2>
