@@ -9,6 +9,7 @@ import NextTopLoader from "nextjs-toploader";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ClerkClientProvider";
+import { DonationProvider } from "@/providers/DonationProvider";
 import { TrackingProvider } from "@/providers/TrackingProvider";
 
 const geistSans = Geist({
@@ -55,13 +56,15 @@ export default function RootLayout({
 
               <ToastProvider>
                 <TrackingProvider>
-                  <div className="flex flex-col min-h-screen">
-                    <Navbar />
-                    <main className="grow">
-                      {children}
-                    </main>
-                    <Footer />
-                  </div>
+                  <DonationProvider>
+                    <div className="flex flex-col min-h-screen">
+                      <Navbar />
+                      <main className="grow">
+                        {children}
+                      </main>
+                      <Footer />
+                    </div>
+                  </DonationProvider>
                 </TrackingProvider>
               </ToastProvider>
             </ThemeProvider>

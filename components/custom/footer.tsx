@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DonateLink } from "./donation/donate-link";
 
 const Footer = () => {
     return (
@@ -22,6 +23,7 @@ const Footer = () => {
                         <Link href="/library" className="hover:underline underline-offset-4">
                             Library
                         </Link>
+                        <DonateLink />
                         <Link href="https://github.com/real-zephex/MangaThingy" target="_blank" className="hover:underline underline-offset-4">
                             GitHub
                         </Link>

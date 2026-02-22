@@ -14,6 +14,7 @@ import {
   UploadIcon,
   ImportIcon,
   MenuIcon,
+  Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -42,6 +43,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useTracking } from "@/providers/TrackingProvider";
+import { useDonation } from "@/providers/DonationProvider";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -51,6 +53,7 @@ const Navbar = () => {
     { name: "Library", href: "/library", icon: Library },
   ];
   const syncTracking = useTracking();
+  const { openDonationModal } = useDonation();
 
   const importData = () => {
     syncTracking.provider.syncToLocal();
@@ -110,6 +113,15 @@ const Navbar = () => {
             >
               <GitBranchPlus className="w-5 h-5" />
             </Link>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={openDonationModal}
+              className="hidden sm:flex text-muted-foreground hover:text-primary"
+            >
+              <Heart className="w-4 h-4 mr-1" />
+              Donate
+            </Button>
             <ModeToggle />
             <div className="flex flex-row items-center gap-2">
               <SignedOut>
@@ -211,6 +223,13 @@ const Navbar = () => {
                       <GitBranchPlus className="w-5 h-5" />
                       GitHub Repository
                     </Link>
+                    <button
+                      onClick={() => openDonationModal()}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-muted-foreground hover:bg-muted w-full text-left"
+                    >
+                      <Heart className="w-5 h-5" />
+                      Donate
+                    </button>
                   </div>
                 </SheetContent>
               </Sheet>
