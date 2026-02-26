@@ -11,6 +11,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ClerkClientProvider";
 import { DonationProvider } from "@/providers/DonationProvider";
 import { TrackingProvider } from "@/providers/TrackingProvider";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,8 +28,8 @@ export const metadata: Metadata = {
     template: "%s | Otaku Oasis",
     default: "Otaku Oasis",
   },
-  description: "Your ultimate destination for manga lovers. Explore, read, and enjoy a vast collection of manga titles all in one place.",
-
+  description:
+    "Your ultimate destination for manga lovers. Explore, read, and enjoy a vast collection of manga titles all in one place.",
 };
 
 export default function RootLayout({
@@ -40,6 +41,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <GoogleAnalytics gaId="G-WSQFR03XW0" />
+        <Script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="214492"
+          async
+          data-cfasync="false"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -59,9 +66,7 @@ export default function RootLayout({
                   <DonationProvider>
                     <div className="flex flex-col min-h-screen">
                       <Navbar />
-                      <main className="grow">
-                        {children}
-                      </main>
+                      <main className="grow">{children}</main>
                       <Footer />
                     </div>
                   </DonationProvider>
