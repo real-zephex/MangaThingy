@@ -41,12 +41,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <GoogleAnalytics gaId="G-WSQFR03XW0" />
-        <Script
+        <script
           src="https://quge5.com/88/tag.min.js"
           data-zone="214492"
           async
           data-cfasync="false"
-        />
+        ></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
