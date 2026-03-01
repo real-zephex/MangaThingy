@@ -141,7 +141,7 @@ const SearchManga = () => {
             </div>
           )}
 
-          {!loading && hasQuery && error && (
+          {!loading && hasQuery && error && debouncedQuery === query.trim() && (
             <CommandEmpty>Search failed. Please try again.</CommandEmpty>
           )}
 
