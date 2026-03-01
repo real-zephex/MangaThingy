@@ -68,32 +68,36 @@ export function CommentCard({ comment, currentUserId }: CommentCardProps) {
   const handleEdit = async () => {
     if (!currentUserId || editContent.trim().length === 0) return;
     try {
-      await updateComment({
+      const result = await updateComment({
         comment_id: comment._id,
         user_id: currentUserId,
         content: editContent.trim(),
       });
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to update comment");
+        return;
+      }
       setIsEditing(false);
       toast.success("Comment updated");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update comment",
-      );
+    } catch {
+      toast.error("Failed to update comment");
     }
   };
 
   const handleDelete = async () => {
     if (!currentUserId) return;
     try {
-      await deleteComment({
+      const result = await deleteComment({
         comment_id: comment._id,
         user_id: currentUserId,
       });
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to delete comment");
+        return;
+      }
       toast.success("Comment deleted");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete comment",
-      );
+    } catch {
+      toast.error("Failed to delete comment");
     }
   };
 
@@ -101,15 +105,17 @@ export function CommentCard({ comment, currentUserId }: CommentCardProps) {
     if (!currentUserId || isLiking) return;
     setIsLiking(true);
     try {
-      await toggleLike({
+      const result = await toggleLike({
         target_id: comment._id,
         target_type: "comment",
         user_id: currentUserId,
       });
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to toggle like",
-      );
+      if (!result.success) {
+        const errResult = result as unknown as { error?: string };
+        toast.error(errResult.error ?? "Failed to toggle like");
+      }
+    } catch {
+      toast.error("Failed to toggle like");
     } finally {
       setIsLiking(false);
     }
@@ -233,7 +239,7 @@ export function CommentCard({ comment, currentUserId }: CommentCardProps) {
             </div>
           </div>
         ) : (
-          <p className="text-sm mt-1 whitespace-pre-wrap break-words text-foreground/90">
+          <p className="text-sm mt-1 whitespace-pre-wrap wrap-break-word text-foreground/90">
             {comment.content}
           </p>
         )}

@@ -34,7 +34,7 @@ export function CommentForm({ mangaId, provider }: CommentFormProps) {
 
     setIsSubmitting(true);
     try {
-      await addComment({
+      const result = await addComment({
         manga_id: mangaId,
         provider,
         user_id: userId,
@@ -43,12 +43,14 @@ export function CommentForm({ mangaId, provider }: CommentFormProps) {
         user_avatar: user.imageUrl,
         content: content.trim(),
       });
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to post comment");
+        return;
+      }
       setContent("");
       toast.success("Comment posted");
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to post comment";
-      toast.error(message);
+    } catch {
+      toast.error("Failed to post comment");
     } finally {
       setIsSubmitting(false);
     }

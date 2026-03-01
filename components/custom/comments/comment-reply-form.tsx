@@ -40,7 +40,7 @@ export function CommentReplyForm({
 
     setIsSubmitting(true);
     try {
-      await addReply({
+      const result = await addReply({
         parent_comment_id: parentCommentId,
         user_id: userId,
         user_name:
@@ -48,13 +48,15 @@ export function CommentReplyForm({
         user_avatar: user.imageUrl,
         content: content.trim(),
       });
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to post reply");
+        return;
+      }
       setContent("");
       toast.success("Reply posted");
       onCancel();
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to post reply";
-      toast.error(message);
+    } catch {
+      toast.error("Failed to post reply");
     } finally {
       setIsSubmitting(false);
     }

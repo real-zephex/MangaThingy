@@ -1,6 +1,6 @@
 import { query, mutation } from "../_generated/server";
 import type { MutationCtx } from "../_generated/server";
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 import { Id } from "../_generated/dataModel";
 
 const RATE_LIMIT_MS = 60_000; // 1 minute
@@ -191,49 +191,43 @@ export const addComment = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      // Validate content length
-      if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH) {
-        throw new ConvexError(
-          `Comment must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
-        );
-      }
-
-      // Check rate limit
-      const rateLimit = await checkRateLimit(ctx, args.user_id);
-      if (!rateLimit.allowed) {
-        const seconds = Math.ceil(rateLimit.retryAfterMs / 1000);
-        throw new ConvexError(
-          `Rate limited. Please wait ${seconds} seconds before posting again.`,
-        );
-      }
-
-      const now = Date.now();
-      const commentId = await ctx.db.insert("manga_comments", {
-        manga_id: args.manga_id,
-        provider: args.provider,
-        user_id: args.user_id,
-        user_name: args.user_name,
-        user_avatar: args.user_avatar,
-        content: args.content.trim(),
-        is_deleted: false,
-        created_at: now,
-        updated_at: now,
-        is_edited: false,
-        likes_count: 0,
-        reply_count: 0,
-      });
-
-      // Update rate limit
-      await updateRateLimit(ctx, args.user_id);
-
-      return { success: true, id: commentId };
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error adding comment: ${(error as Error).message}`,
-      );
+    // Validate content length
+    if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH) {
+      return {
+        success: false,
+        error: `Comment must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
+      };
     }
+
+    // Check rate limit
+    const rateLimit = await checkRateLimit(ctx, args.user_id);
+    if (!rateLimit.allowed) {
+      const seconds = Math.ceil(rateLimit.retryAfterMs / 1000);
+      return {
+        success: false,
+        error: `Rate limited. Please wait ${seconds} seconds before posting again.`,
+      };
+    }
+
+    const now = Date.now();
+    const commentId = await ctx.db.insert("manga_comments", {
+      manga_id: args.manga_id,
+      provider: args.provider,
+      user_id: args.user_id,
+      user_name: args.user_name,
+      user_avatar: args.user_avatar,
+      content: args.content.trim(),
+      is_deleted: false,
+      created_at: now,
+      updated_at: now,
+      is_edited: false,
+      likes_count: 0,
+      reply_count: 0,
+    });
+
+    await updateRateLimit(ctx, args.user_id);
+
+    return { success: true, id: commentId };
   },
 });
 
@@ -244,31 +238,25 @@ export const updateComment = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      const comment = await ctx.db.get(args.comment_id);
-      if (!comment) throw new ConvexError("Comment not found.");
-      if (comment.user_id !== args.user_id)
-        throw new ConvexError("You can only edit your own comments.");
-      if (comment.is_deleted)
-        throw new ConvexError("Cannot edit a deleted comment.");
-      if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH)
-        throw new ConvexError(
-          `Comment must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
-        );
+    const comment = await ctx.db.get(args.comment_id);
+    if (!comment) return { success: false, error: "Comment not found." };
+    if (comment.user_id !== args.user_id)
+      return { success: false, error: "You can only edit your own comments." };
+    if (comment.is_deleted)
+      return { success: false, error: "Cannot edit a deleted comment." };
+    if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH)
+      return {
+        success: false,
+        error: `Comment must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
+      };
 
-      await ctx.db.patch(args.comment_id, {
-        content: args.content.trim(),
-        updated_at: Date.now(),
-        is_edited: true,
-      });
+    await ctx.db.patch(args.comment_id, {
+      content: args.content.trim(),
+      updated_at: Date.now(),
+      is_edited: true,
+    });
 
-      return { success: true };
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error updating comment: ${(error as Error).message}`,
-      );
-    }
+    return { success: true };
   },
 });
 
@@ -278,25 +266,21 @@ export const deleteComment = mutation({
     user_id: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      const comment = await ctx.db.get(args.comment_id);
-      if (!comment) throw new ConvexError("Comment not found.");
-      if (comment.user_id !== args.user_id)
-        throw new ConvexError("You can only delete your own comments.");
+    const comment = await ctx.db.get(args.comment_id);
+    if (!comment) return { success: false, error: "Comment not found." };
+    if (comment.user_id !== args.user_id)
+      return {
+        success: false,
+        error: "You can only delete your own comments.",
+      };
 
-      await ctx.db.patch(args.comment_id, {
-        is_deleted: true,
-        content: "",
-        updated_at: Date.now(),
-      });
+    await ctx.db.patch(args.comment_id, {
+      is_deleted: true,
+      content: "",
+      updated_at: Date.now(),
+    });
 
-      return { success: true };
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error deleting comment: ${(error as Error).message}`,
-      );
-    }
+    return { success: true };
   },
 });
 
@@ -309,58 +293,53 @@ export const addReply = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      // Validate content length
-      if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH) {
-        throw new ConvexError(
-          `Reply must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
-        );
-      }
-
-      // Validate parent exists
-      const parent = await ctx.db.get(args.parent_comment_id);
-      if (!parent) throw new ConvexError("Parent comment not found.");
-
-      // Check rate limit
-      const rateLimit = await checkRateLimit(ctx, args.user_id);
-      if (!rateLimit.allowed) {
-        const seconds = Math.ceil(rateLimit.retryAfterMs / 1000);
-        throw new ConvexError(
-          `Rate limited. Please wait ${seconds} seconds before posting again.`,
-        );
-      }
-
-      const now = Date.now();
-      const replyId = await ctx.db.insert("comment_replies", {
-        parent_comment_id: args.parent_comment_id,
-        manga_id: parent.manga_id,
-        provider: parent.provider,
-        user_id: args.user_id,
-        user_name: args.user_name,
-        user_avatar: args.user_avatar,
-        content: args.content.trim(),
-        is_deleted: false,
-        created_at: now,
-        updated_at: now,
-        is_edited: false,
-        likes_count: 0,
-      });
-
-      // Increment parent reply_count
-      await ctx.db.patch(args.parent_comment_id, {
-        reply_count: parent.reply_count + 1,
-      });
-
-      // Update rate limit
-      await updateRateLimit(ctx, args.user_id);
-
-      return { success: true, id: replyId };
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error adding reply: ${(error as Error).message}`,
-      );
+    // Validate content length
+    if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH) {
+      return {
+        success: false,
+        error: `Reply must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
+      };
     }
+
+    // Validate parent exists
+    const parent = await ctx.db.get(args.parent_comment_id);
+    if (!parent)
+      return { success: false, error: "Parent comment not found." };
+
+    // Check rate limit
+    const rateLimit = await checkRateLimit(ctx, args.user_id);
+    if (!rateLimit.allowed) {
+      const seconds = Math.ceil(rateLimit.retryAfterMs / 1000);
+      return {
+        success: false,
+        error: `Rate limited. Please wait ${seconds} seconds before posting again.`,
+      };
+    }
+
+    const now = Date.now();
+    const replyId = await ctx.db.insert("comment_replies", {
+      parent_comment_id: args.parent_comment_id,
+      manga_id: parent.manga_id,
+      provider: parent.provider,
+      user_id: args.user_id,
+      user_name: args.user_name,
+      user_avatar: args.user_avatar,
+      content: args.content.trim(),
+      is_deleted: false,
+      created_at: now,
+      updated_at: now,
+      is_edited: false,
+      likes_count: 0,
+    });
+
+    // Increment parent reply_count
+    await ctx.db.patch(args.parent_comment_id, {
+      reply_count: parent.reply_count + 1,
+    });
+
+    await updateRateLimit(ctx, args.user_id);
+
+    return { success: true, id: replyId };
   },
 });
 
@@ -371,31 +350,25 @@ export const updateReply = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      const reply = await ctx.db.get(args.reply_id);
-      if (!reply) throw new ConvexError("Reply not found.");
-      if (reply.user_id !== args.user_id)
-        throw new ConvexError("You can only edit your own replies.");
-      if (reply.is_deleted)
-        throw new ConvexError("Cannot edit a deleted reply.");
-      if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH)
-        throw new ConvexError(
-          `Reply must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
-        );
+    const reply = await ctx.db.get(args.reply_id);
+    if (!reply) return { success: false, error: "Reply not found." };
+    if (reply.user_id !== args.user_id)
+      return { success: false, error: "You can only edit your own replies." };
+    if (reply.is_deleted)
+      return { success: false, error: "Cannot edit a deleted reply." };
+    if (args.content.length === 0 || args.content.length > MAX_COMMENT_LENGTH)
+      return {
+        success: false,
+        error: `Reply must be between 1 and ${MAX_COMMENT_LENGTH} characters.`,
+      };
 
-      await ctx.db.patch(args.reply_id, {
-        content: args.content.trim(),
-        updated_at: Date.now(),
-        is_edited: true,
-      });
+    await ctx.db.patch(args.reply_id, {
+      content: args.content.trim(),
+      updated_at: Date.now(),
+      is_edited: true,
+    });
 
-      return { success: true };
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error updating reply: ${(error as Error).message}`,
-      );
-    }
+    return { success: true };
   },
 });
 
@@ -405,33 +378,26 @@ export const deleteReply = mutation({
     user_id: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      const reply = await ctx.db.get(args.reply_id);
-      if (!reply) throw new ConvexError("Reply not found.");
-      if (reply.user_id !== args.user_id)
-        throw new ConvexError("You can only delete your own replies.");
+    const reply = await ctx.db.get(args.reply_id);
+    if (!reply) return { success: false, error: "Reply not found." };
+    if (reply.user_id !== args.user_id)
+      return { success: false, error: "You can only delete your own replies." };
 
-      await ctx.db.patch(args.reply_id, {
-        is_deleted: true,
-        content: "",
-        updated_at: Date.now(),
+    await ctx.db.patch(args.reply_id, {
+      is_deleted: true,
+      content: "",
+      updated_at: Date.now(),
+    });
+
+    // Decrement parent reply_count
+    const parent = await ctx.db.get(reply.parent_comment_id);
+    if (parent) {
+      await ctx.db.patch(reply.parent_comment_id, {
+        reply_count: Math.max(0, parent.reply_count - 1),
       });
-
-      // Decrement parent reply_count
-      const parent = await ctx.db.get(reply.parent_comment_id);
-      if (parent) {
-        await ctx.db.patch(reply.parent_comment_id, {
-          reply_count: Math.max(0, parent.reply_count - 1),
-        });
-      }
-
-      return { success: true };
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error deleting reply: ${(error as Error).message}`,
-      );
     }
+
+    return { success: true };
   },
 });
 
@@ -442,77 +408,70 @@ export const toggleLike = mutation({
     user_id: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      // Check if user already liked
-      const existingLike = await ctx.db
-        .query("comment_likes")
-        .withIndex("by_user_target", (q) =>
-          q
-            .eq("user_id", args.user_id)
-            .eq("target_id", args.target_id)
-            .eq("target_type", args.target_type),
-        )
-        .first();
+    // Check if user already liked
+    const existingLike = await ctx.db
+      .query("comment_likes")
+      .withIndex("by_user_target", (q) =>
+        q
+          .eq("user_id", args.user_id)
+          .eq("target_id", args.target_id)
+          .eq("target_type", args.target_type),
+      )
+      .first();
 
-      if (existingLike) {
-        // Unlike: remove the like
-        await ctx.db.delete(existingLike._id);
+    if (existingLike) {
+      // Unlike: remove the like
+      await ctx.db.delete(existingLike._id);
 
-        // Decrement likes_count on target
-        if (args.target_type === "comment") {
-          const commentId = args.target_id as Id<"manga_comments">;
-          const comment = await ctx.db.get(commentId);
-          if (comment) {
-            await ctx.db.patch(commentId, {
-              likes_count: Math.max(0, comment.likes_count - 1),
-            });
-          }
-        } else {
-          const replyId = args.target_id as Id<"comment_replies">;
-          const reply = await ctx.db.get(replyId);
-          if (reply) {
-            await ctx.db.patch(replyId, {
-              likes_count: Math.max(0, reply.likes_count - 1),
-            });
-          }
+      // Decrement likes_count on target
+      if (args.target_type === "comment") {
+        const commentId = args.target_id as Id<"manga_comments">;
+        const comment = await ctx.db.get(commentId);
+        if (comment) {
+          await ctx.db.patch(commentId, {
+            likes_count: Math.max(0, comment.likes_count - 1),
+          });
         }
-
-        return { success: true, liked: false };
       } else {
-        // Like: add the like
-        await ctx.db.insert("comment_likes", {
-          target_id: args.target_id,
-          target_type: args.target_type,
-          user_id: args.user_id,
-          created_at: Date.now(),
-        });
-
-        // Increment likes_count on target
-        if (args.target_type === "comment") {
-          const commentId = args.target_id as Id<"manga_comments">;
-          const comment = await ctx.db.get(commentId);
-          if (comment) {
-            await ctx.db.patch(commentId, {
-              likes_count: comment.likes_count + 1,
-            });
-          }
-        } else {
-          const replyId = args.target_id as Id<"comment_replies">;
-          const reply = await ctx.db.get(replyId);
-          if (reply) {
-            await ctx.db.patch(replyId, {
-              likes_count: reply.likes_count + 1,
-            });
-          }
+        const replyId = args.target_id as Id<"comment_replies">;
+        const reply = await ctx.db.get(replyId);
+        if (reply) {
+          await ctx.db.patch(replyId, {
+            likes_count: Math.max(0, reply.likes_count - 1),
+          });
         }
-
-        return { success: true, liked: true };
       }
-    } catch (error) {
-      if (error instanceof ConvexError) throw error;
-      throw new ConvexError(
-        `Error toggling like: ${(error as Error).message}`,
-      );
+
+      return { success: true, liked: false };
+    } else {
+      // Like: add the like
+      await ctx.db.insert("comment_likes", {
+        target_id: args.target_id,
+        target_type: args.target_type,
+        user_id: args.user_id,
+        created_at: Date.now(),
+      });
+
+      // Increment likes_count on target
+      if (args.target_type === "comment") {
+        const commentId = args.target_id as Id<"manga_comments">;
+        const comment = await ctx.db.get(commentId);
+        if (comment) {
+          await ctx.db.patch(commentId, {
+            likes_count: comment.likes_count + 1,
+          });
+        }
+      } else {
+        const replyId = args.target_id as Id<"comment_replies">;
+        const reply = await ctx.db.get(replyId);
+        if (reply) {
+          await ctx.db.patch(replyId, {
+            likes_count: reply.likes_count + 1,
+          });
+        }
+      }
+
+      return { success: true, liked: true };
     }
   },
 });

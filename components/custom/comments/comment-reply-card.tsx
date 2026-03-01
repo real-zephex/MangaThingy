@@ -59,32 +59,36 @@ export function CommentReplyCard({
   const handleEdit = async () => {
     if (!currentUserId || editContent.trim().length === 0) return;
     try {
-      await updateReply({
+      const result = await updateReply({
         reply_id: reply._id,
         user_id: currentUserId,
         content: editContent.trim(),
       });
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to update reply");
+        return;
+      }
       setIsEditing(false);
       toast.success("Reply updated");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update reply",
-      );
+    } catch {
+      toast.error("Failed to update reply");
     }
   };
 
   const handleDelete = async () => {
     if (!currentUserId) return;
     try {
-      await deleteReply({
+      const result = await deleteReply({
         reply_id: reply._id,
         user_id: currentUserId,
       });
+      if (!result.success) {
+        toast.error(result.error ?? "Failed to delete reply");
+        return;
+      }
       toast.success("Reply deleted");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete reply",
-      );
+    } catch {
+      toast.error("Failed to delete reply");
     }
   };
 
@@ -92,15 +96,17 @@ export function CommentReplyCard({
     if (!currentUserId || isLiking) return;
     setIsLiking(true);
     try {
-      await toggleLike({
+      const result = await toggleLike({
         target_id: reply._id,
         target_type: "reply",
         user_id: currentUserId,
       });
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to toggle like",
-      );
+      if (!result.success) {
+        const errResult = result as unknown as { error?: string };
+        toast.error(errResult.error ?? "Failed to toggle like");
+      }
+    } catch {
+      toast.error("Failed to toggle like");
     } finally {
       setIsLiking(false);
     }
