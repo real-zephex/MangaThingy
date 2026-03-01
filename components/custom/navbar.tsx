@@ -10,10 +10,7 @@ import {
   Library,
   Menu,
   GitBranchPlus,
-  InfoIcon,
-  UploadIcon,
-  ImportIcon,
-  MenuIcon,
+  RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -33,15 +30,8 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { ButtonGroup } from "../ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { useTracking } from "@/providers/TrackingProvider";
+import { useSyncFromDatabase } from "@/providers/TrackingProvider";
+import { useCallback } from "react";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -50,15 +40,11 @@ const Navbar = () => {
     { name: "Browse", href: "/browse", icon: Compass },
     { name: "Library", href: "/library", icon: Library },
   ];
-  const syncTracking = useTracking();
+  const { syncToLocal } = useSyncFromDatabase();
 
-  const importData = () => {
-    syncTracking.provider.syncToLocal();
-  };
-
-  const exportData = () => {
-    syncTracking.provider.syncAll();
-  };
+  const handleRestoreHistory = useCallback(() => {
+    syncToLocal();
+  }, [syncToLocal]);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
@@ -130,48 +116,16 @@ const Navbar = () => {
             </SignedOut>
             <SignedIn>
               <UserButton />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-muted-foreground hover:text-foreground"
-                    aria-label="Sync settings"
-                  >
-                    <MenuIcon className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Sync Settings</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="flex flex-row items-center gap-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      importData();
-                    }}
-                  >
-                    <ImportIcon className="h-4 w-4" />
-                    Import from database
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="flex flex-row items-center gap-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      exportData();
-                    }}
-                  >
-                    <UploadIcon className="h-4 w-4" />
-                    Export to database
-                  </DropdownMenuItem>
-                  <div className="flex flex-row items-center px-2 py-1.5 gap-2">
-                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
-                    <p className="text-xs text-muted-foreground font-mono">
-                      2 min auto-sync interval
-                    </p>
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                aria-label="Restore reading history from database"
+                onClick={handleRestoreHistory}
+                title="Restore reading history from database (if local storage was cleared)"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
             </SignedIn>
           </div>
 

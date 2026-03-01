@@ -18,10 +18,6 @@ import { TrackObject } from "@/convex/types";
 import { useAuth } from "@clerk/nextjs";
 
 interface TrackingContextType {
-  provider: {
-    syncAll: () => void;
-    syncToLocal: () => void;
-  };
   /** Live reading history from Convex (null for guests, undefined while loading) */
   historyData: TrackObject[] | null | undefined;
 }
@@ -32,7 +28,6 @@ const TrackingContext = createContext<TrackingContextType | undefined>(
 
 export const TrackingProvider = ({ children }: { children: ReactNode }) => {
   const tracker = useMemo(() => new ProgressTracker(), []);
-  const mutate = useMutation(api.functions.mutations.syncReadingHistory);
   const toast = useToast();
   const { isLoaded, isSignedIn, userId } = useAuth();
   const hasAutoSyncedToLocal = useRef(false);
@@ -40,53 +35,6 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
   const historyData = useQuery(
     api.functions.query.getReadingHistory,
     userId ? { user_id: userId } : "skip",
-  );
-
-  const syncAll = useCallback(
-    async (isAutoSync = false) => {
-      if (!userId || !isLoaded || !isSignedIn) {
-        if (!isAutoSync) toast.info("Sync not available for guest users.");
-        return;
-      }
-
-      const getTimeFromLocalStorage =
-        localStorage.getItem("trackingLastSyncTime") || "0";
-      const lastSyncTime = parseInt(getTimeFromLocalStorage, 10);
-      const currentTime = Date.now();
-
-      if (currentTime - lastSyncTime < 2 * 60 * 1000) {
-        if (!isAutoSync)
-          toast.info("Sync was performed less than 2 minutes ago.");
-        return;
-      }
-      if (!isAutoSync) toast.info("Syncing...");
-      localStorage.setItem("trackingLastSyncTime", currentTime.toString());
-      const items: TrackObject[] = tracker.getAll().map((i) => ({
-        user_id: userId,
-        id: i.id,
-        title: i.title,
-        image: i.image,
-        status: i.status,
-        chapter: i.chapter,
-        chapterId: i.chapterId,
-        chapterTitle: i.chapterTitle,
-        provider: i.provider || "unknown",
-        totalChapter: i.totalChapter,
-        rating: i.rating,
-        updatedAt: i.updatedAt ?? Date.now(),
-      }));
-      try {
-        await mutate({ entries: items });
-        if (!isAutoSync)
-          toast.success("Synced " + items.length + " items to convex storage");
-      } catch (error) {
-        console.error(error);
-        toast.error(
-          "Error syncing reading history: " + (error as Error).message,
-        );
-      }
-    },
-    [userId, isLoaded, isSignedIn, mutate, tracker, toast],
   );
 
   const syncToLocal = useCallback(
@@ -156,23 +104,11 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isSignedIn, isLoaded, historyData, tracker]);
 
-  // Background auto-sync every 2.1 minutes
-  useEffect(() => {
-    if (!isSignedIn || !isLoaded) return;
-
-    const id = setInterval(() => {
-      syncAll(true);
-    }, 2.1 * 60 * 1000);
-
-    return () => clearInterval(id);
-  }, [isSignedIn, isLoaded, syncAll]);
-
   const providerValue = useMemo(
     () => ({
-      provider: { syncAll, syncToLocal },
       historyData: userId ? historyData ?? null : null,
     }),
-    [syncAll, syncToLocal, historyData, userId],
+    [historyData, userId],
   );
 
   return (
@@ -188,4 +124,52 @@ export function useTracking() {
     throw new Error("useTracking must be used within a TrackingProvider");
   }
   return context;
+}
+
+/**
+ * Hook to manually restore reading history from database
+ * Useful if the initial auto-mount sync failed
+ */
+export function useSyncFromDatabase() {
+  const { historyData } = useTracking();
+  const tracker = useMemo(() => new ProgressTracker(), []);
+  const toast = useToast();
+  const { isLoaded, isSignedIn, userId } = useAuth();
+
+  const syncToLocal = useCallback(async () => {
+    if (!userId || !isLoaded || !isSignedIn) {
+      toast.info("Sign in to restore your reading history from database");
+      return;
+    }
+
+    if (historyData === undefined) {
+      toast.info("Database is still loading. Please wait.");
+      return;
+    }
+
+    if (!historyData || historyData.length === 0) {
+      toast.info("No reading history found in database");
+      return;
+    }
+
+    const sanitizedHistory = historyData.map((item) => ({
+      id: item.id,
+      title: item.title,
+      image: item.image,
+      status: item.status,
+      chapter: item.chapter,
+      chapterId: item.chapterId,
+      chapterTitle: item.chapterTitle,
+      provider: item.provider,
+      totalChapter: item.totalChapter,
+      rating: item.rating,
+      updatedAt: item.updatedAt,
+    }));
+    tracker.setLocalStorage(sanitizedHistory);
+    toast.success(
+      `Restored ${sanitizedHistory.length} manga from database`,
+    );
+  }, [userId, isLoaded, isSignedIn, historyData, toast, tracker]);
+
+  return { syncToLocal };
 }

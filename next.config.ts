@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Image optimization */
   images: {
     remotePatterns: [
       {
@@ -9,8 +9,18 @@ const nextConfig: NextConfig = {
         hostname: "goodproxy.goodproxy.workers.dev",
       },
     ],
-    unoptimized: true,
   },
+
+  /* Compression and optimization */
+  compress: true,
+  poweredByHeader: false,
+
+  /* Enable React 19 optimizations */
+  ...(process.env.NODE_ENV === "production" && {
+    experimental: {
+      optimizePackageImports: ["@radix-ui/react-*", "lucide-react"],
+    },
+  }),
 };
 
 export default nextConfig;
