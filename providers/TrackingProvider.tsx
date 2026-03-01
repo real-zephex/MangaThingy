@@ -11,15 +11,18 @@ import {
 } from "react";
 
 import { useToast } from "@/components/providers/toast-provider";
+import { TrackingSyncState } from "@/components/custom/info/sync-status-pill";
 import { api } from "@/convex/_generated/api";
-import { ProgressTracker } from "@/lib/progress/tracker";
-import { useQuery } from "convex/react";
 import { TrackObject } from "@/convex/types";
+import { ProgressTracker } from "@/lib/progress/tracker";
 import { useAuth } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
 
 interface TrackingContextType {
   /** Live reading history from Convex (null for guests, undefined while loading) */
   historyData: TrackObject[] | null | undefined;
+  syncState: TrackingSyncState;
+  lastSyncedAt: number | null;
 }
 
 const TrackingContext = createContext<TrackingContextType | undefined>(
@@ -36,6 +39,22 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
     userId ? { user_id: userId } : "skip",
   );
 
+  const syncState = useMemo<TrackingSyncState>(() => {
+    if (!isLoaded) {
+      return "loading";
+    }
+
+    if (!isSignedIn) {
+      return "idle";
+    }
+
+    if (historyData === undefined) {
+      return "loading";
+    }
+
+    return "synced";
+  }, [historyData, isLoaded, isSignedIn]);
+
   // Auto-pull from Convex on mount for signed-in users
   useEffect(() => {
     if (
@@ -48,29 +67,35 @@ export const TrackingProvider = ({ children }: { children: ReactNode }) => {
 
     hasAutoSyncedToLocal.current = true;
 
-    if (historyData && historyData.length > 0) {
-      const sanitizedHistory = historyData.map((item) => ({
-        id: item.id,
-        title: item.title,
-        image: item.image,
-        status: item.status,
-        chapter: item.chapter,
-        chapterId: item.chapterId,
-        chapterTitle: item.chapterTitle,
-        provider: item.provider,
-        totalChapter: item.totalChapter,
-        rating: item.rating,
-        updatedAt: item.updatedAt,
-      }));
-      tracker.setLocalStorage(sanitizedHistory);
+    try {
+      if (historyData && historyData.length > 0) {
+        const sanitizedHistory = historyData.map((item) => ({
+          id: item.id,
+          title: item.title,
+          image: item.image,
+          status: item.status,
+          chapter: item.chapter,
+          chapterId: item.chapterId,
+          chapterTitle: item.chapterTitle,
+          provider: item.provider,
+          totalChapter: item.totalChapter,
+          rating: item.rating,
+          updatedAt: item.updatedAt,
+        }));
+        tracker.setLocalStorage(sanitizedHistory);
+      }
+    } catch (error) {
+      console.error("[TrackingProvider Sync] Error:", error);
     }
   }, [isSignedIn, isLoaded, historyData, tracker]);
 
   const providerValue = useMemo(
     () => ({
       historyData: userId ? historyData ?? null : null,
+      syncState,
+      lastSyncedAt: null,
     }),
-    [historyData, userId],
+    [historyData, syncState, userId],
   );
 
   return (
@@ -114,23 +139,26 @@ export function useSyncFromDatabase() {
       return;
     }
 
-    const sanitizedHistory = historyData.map((item) => ({
-      id: item.id,
-      title: item.title,
-      image: item.image,
-      status: item.status,
-      chapter: item.chapter,
-      chapterId: item.chapterId,
-      chapterTitle: item.chapterTitle,
-      provider: item.provider,
-      totalChapter: item.totalChapter,
-      rating: item.rating,
-      updatedAt: item.updatedAt,
-    }));
-    tracker.setLocalStorage(sanitizedHistory);
-    toast.success(
-      `Restored ${sanitizedHistory.length} manga from database`,
-    );
+    try {
+      const sanitizedHistory = historyData.map((item) => ({
+        id: item.id,
+        title: item.title,
+        image: item.image,
+        status: item.status,
+        chapter: item.chapter,
+        chapterId: item.chapterId,
+        chapterTitle: item.chapterTitle,
+        provider: item.provider,
+        totalChapter: item.totalChapter,
+        rating: item.rating,
+        updatedAt: item.updatedAt,
+      }));
+      tracker.setLocalStorage(sanitizedHistory);
+      toast.success(`Restored ${sanitizedHistory.length} manga from database`);
+    } catch (error) {
+      console.error("[TrackingProvider Restore] Error:", error);
+      toast.error("Failed to restore reading history from database");
+    }
   }, [userId, isLoaded, isSignedIn, historyData, toast, tracker]);
 
   return { syncToLocal };
