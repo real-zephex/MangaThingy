@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Progress } from "@/components/ui/progress";
 import { ProgressTracker, Progress as ProgressType } from "@/lib/progress/tracker";
 import { BookOpen, CheckCircle2 } from "lucide-react";
 
 const ProgressBar = ({ id }: { id: string }) => {
-  const tracker = new ProgressTracker();
+  const tracker = useMemo(() => new ProgressTracker(), []);
   const [progress, setProgress] = useState(0);
   const [info, setInfo] = useState<ProgressType | null>(null);
 
@@ -34,7 +34,7 @@ const ProgressBar = ({ id }: { id: string }) => {
     const handleStorage = () => calculateProgress();
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, [id]);
+  }, [id, tracker]);
 
   if (!info) return null;
 

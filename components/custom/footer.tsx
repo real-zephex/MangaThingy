@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DonateLink } from "./donation/donate-link";
-import { BookOpen, GitBranchPlus, Heart } from "lucide-react";
+import { BookOpen, GitBranchPlus } from "lucide-react";
 
 const Footer = () => {
   return (

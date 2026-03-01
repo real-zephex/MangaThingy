@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchIcon, Loader2, BookOpen, Calendar } from "lucide-react";
+import { SearchIcon, Loader2, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { MangapillService, AsurascansService } from "@/lib/services/manga.actions";
 import { Manga } from "@/lib/services/manga.types";
 import { ImageProxy } from "@/lib/services/image.proxy";
-import { cn } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
 
 const SearchManga = () => {
@@ -146,7 +145,7 @@ const SearchManga = () => {
           )}
 
           {!loading && query && mangapillResults.length === 0 && asurascansResults.length === 0 && (
-            <CommandEmpty>No results found for "{query}".</CommandEmpty>
+            <CommandEmpty>No results found for &quot;{query}&quot;.</CommandEmpty>
           )}
 
           {!loading && (mangapillResults.length > 0 || asurascansResults.length > 0) && (

@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/purity */
+
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +12,7 @@ import {
   MangaInfoResults,
 } from "@/lib/services/manga.types";
 import { cn } from "@/lib/utils";
-import {
-  ArrowUpDown,
-  CheckCircle2,
-  ExternalLink,
-  Search,
-} from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ExternalLink, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
@@ -34,7 +31,7 @@ const ChapterButton = ({
   const [count] = useState(30);
   const [toggled, setToggled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isReversed, setIsReversed] = useState(provider === "asurascans");
+  const [isReversed, setIsReversed] = useState(false);
 
   const toast = useToast();
   const router = useRouter();
@@ -118,7 +115,11 @@ const ChapterButton = ({
     }
   };
 
-  const handleChapterClick = (chap: { id: string; title: string; index: number }) => {
+  const handleChapterClick = (chap: {
+    id: string;
+    title: string;
+    index: number;
+  }) => {
     updateProgress(chap, chap.index);
 
     // Navigate to the full-screen reader
@@ -127,7 +128,9 @@ const ChapterButton = ({
       mangaId: data.results.id,
       mangaTitle: data.results.title || "",
     });
-    router.push(`/read/${provider}/${encodeURIComponent(chap.id)}?${params.toString()}`);
+    router.push(
+      `/read/${provider}/${encodeURIComponent(chap.id)}?${params.toString()}`,
+    );
   };
 
   const filteredChapters = chapter

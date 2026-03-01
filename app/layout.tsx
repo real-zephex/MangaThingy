@@ -11,7 +11,6 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ClerkClientProvider";
 import { DonationProvider } from "@/providers/DonationProvider";
 import { TrackingProvider } from "@/providers/TrackingProvider";
-import Script from "next/script";
 import { ScrollToTop } from "@/components/custom/ui/scroll-to-top";
 
 const geistSans = Geist({

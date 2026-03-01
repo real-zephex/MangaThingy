@@ -22,7 +22,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
   let results: Manga[] = [];
   let title = "Browse Manga";
-  let icon = <Globe className="w-5 h-5 text-brand-start" />;
+  let iconType: "search" | "trending" | "zap" | "globe" = "globe";
 
   try {
     if (q) {
@@ -32,23 +32,32 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           : await MangapillService.search(q);
       results = searchResults.results;
       title = `Results for "${q}"`;
-      icon = <Search className="w-5 h-5 text-brand-start" />;
+      iconType = "search";
     } else {
       if (provider === "asurascans") {
         const popular = await AsurascansService.getPopular();
         results = popular.results;
         title = "Popular on Asura Scans";
-        icon = <TrendingUp className="w-5 h-5 text-brand-start" />;
+        iconType = "trending";
       } else {
         const newest = await MangapillService.getNewest();
         results = newest.results;
         title = "Newest on Mangapill";
-        icon = <Zap className="w-5 h-5 text-brand-start" />;
+        iconType = "zap";
       }
     }
   } catch (error) {
     console.error("Error fetching browse data:", error);
   }
+
+  // Render icon after try/catch
+  const iconMap = {
+    search: <Search className="w-5 h-5 text-brand-start" />,
+    trending: <TrendingUp className="w-5 h-5 text-brand-start" />,
+    zap: <Zap className="w-5 h-5 text-brand-start" />,
+    globe: <Globe className="w-5 h-5 text-brand-start" />,
+  };
+  const icon = iconMap[iconType];
 
   const providers = [
     { id: "mangapill", name: "Mangapill" },

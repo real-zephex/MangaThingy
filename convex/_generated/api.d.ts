@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as functions_comments from "../functions/comments.js";
 import type * as functions_mutations from "../functions/mutations.js";
 import type * as functions_query from "../functions/query.js";
 import type * as functions_retrieve from "../functions/retrieve.js";
@@ -20,6 +21,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "functions/comments": typeof functions_comments;
   "functions/mutations": typeof functions_mutations;
   "functions/query": typeof functions_query;
   "functions/retrieve": typeof functions_retrieve;

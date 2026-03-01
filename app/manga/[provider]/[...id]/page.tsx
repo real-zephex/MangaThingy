@@ -1,5 +1,6 @@
 import { MangaInfoHeader } from "@/components/custom/info/manga-info-header";
 import ChapterButton from "@/components/custom/reader/viewPages";
+import { CommentSection } from "@/components/custom/comments/comment-section";
 import { Button } from "@/components/ui/button";
 import { ImageProxy } from "@/lib/services/image.proxy";
 import {
@@ -108,6 +109,11 @@ const MangaInfoPage = async ({ params }: { params: Promise<PageParams> }) => {
           provider={provider}
           data={mangaInfo}
         />
+      </div>
+
+      {/* Comments Section */}
+      <div className="mt-12">
+        <CommentSection mangaId={mangaInfo.results.id} provider={provider} />
       </div>
     </main>
   );

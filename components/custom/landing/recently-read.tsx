@@ -1,12 +1,14 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { useTracking } from "@/providers/TrackingProvider";
 import { ProgressTracker } from "@/lib/progress/tracker";
 import { ImageProxy } from "@/lib/services/image.proxy";
 import Image from "next/image";
 import Link from "next/link";
 import { History } from "lucide-react";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useLayoutEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import {
   Tooltip,
@@ -22,7 +24,7 @@ export const RecentlyRead = () => {
   const [mounted, setMounted] = useState(false);
 
   // Prevent hydration mismatch by only rendering after mount
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMounted(true);
   }, []);
 

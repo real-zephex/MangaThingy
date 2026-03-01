@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -42,15 +44,12 @@ export function TrackManga({
   }
 
   useEffect(() => {
-    function fetchStatus() {
-      const result = existenceCheck();
-      if (result) {
-        setStatus(result.status);
-        setRating(result.rating ?? 0);
-      }
+    const result = tracker.getOne(data.id);
+    if (result) {
+      setStatus(result.status);
+      setRating(result.rating ?? 0);
     }
-    fetchStatus();
-  }, []);
+  }, [tracker, data.id]);
 
   async function handleChange(e: string) {
     const provider = data.source || "unknown";

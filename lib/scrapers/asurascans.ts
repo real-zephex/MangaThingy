@@ -121,7 +121,8 @@ export class Asurascans {
             id: chapterId,
           };
         })
-        .get();
+        .get()
+        .reverse();
 
       return {
         status: response.status,

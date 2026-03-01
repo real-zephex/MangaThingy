@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable react-hooks/purity */
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -606,10 +608,11 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean
 }) {
-  // Random width between 50 to 90%.
+  // Random width between 50 to 90% — used for skeleton animation effect
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+    const randomValue = Math.floor(Math.random() * 40) + 50;
+    return `${randomValue}%`;
+  }, []);
 
   return (
     <div
