@@ -76,10 +76,9 @@ import { MangapillService } from "@/lib/services/manga.actions";
 - Trailing commas in multi-line structures
 
 ### TypeScript
-
-- Strict mode is enabled - avoid `any` when possible
-- Define types in separate files when reusable (see `lib/scrapers/types.ts`)
-- Use Zod schemas for runtime validation
+  - Strict mode is enabled - avoid `any` when possible
+  - Define types in separate files when reusable (see `lib/scrapers/types.ts`)
+  - Use Zod schemas for runtime validation
 - Prefer interfaces for object shapes, types for unions/primitives
 
 ```typescript
