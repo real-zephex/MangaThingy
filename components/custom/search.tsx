@@ -18,7 +18,6 @@ import { Manga } from "@/lib/services/manga.types";
 import { ImageProxy } from "@/lib/services/image.proxy";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
 
 const SearchManga = () => {
   const [open, setOpen] = useState(false);
@@ -78,19 +77,58 @@ const SearchManga = () => {
 
   const onSelect = (source: string, id: string) => {
     setOpen(false);
+    setQuery("");
+    setMangapillResults([]);
+    setAsurascansResults([]);
     router.push(`/manga/${source}/${id}`);
+  };
+
+  const renderResults = (results: Manga[], source: string) => {
+    return results.map((manga) => (
+      <CommandItem
+        key={`${source}-${manga.id}`}
+        className="flex items-center gap-3 p-2 cursor-pointer hover:bg-brand-start/5 transition-colors group"
+        onSelect={() => onSelect(source, manga.id)}
+      >
+        <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-md border border-border group-hover:border-brand-start transition-colors">
+          <Image
+            src={ImageProxy(manga.image)}
+            alt=""
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="flex flex-col flex-1 min-w-0">
+          <span className="font-bold text-sm line-clamp-1 group-hover:text-brand-start transition-colors">{manga.title}</span>
+          <div className="flex items-center gap-2 mt-1">
+            {manga.year && (
+              <span className="text-xs text-muted-foreground flex items-center gap-0.5">
+                <Calendar size={10} aria-hidden="true" />
+                {manga.year}
+              </span>
+            )}
+            {manga.status && (
+              <span className="text-xs text-muted-foreground flex items-center gap-0.5 capitalize bg-secondary/50 px-1 rounded">
+                {manga.status}
+              </span>
+            )}
+          </div>
+        </div>
+      </CommandItem>
+    ));
   };
 
   return (
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+        className="relative h-9 w-9 p-0 md:h-10 md:w-48 lg:w-60 md:justify-start md:px-3 md:py-2 border-2 hover:border-brand-start/50 transition-all"
         onClick={() => setOpen(true)}
+        aria-label="Search manga"
       >
-        <SearchIcon className="h-4 w-4 xl:mr-2" aria-hidden="true" />
-        <span className="hidden xl:inline-flex text-muted-foreground text-sm">Search manga...</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
+        <SearchIcon className="h-4 w-4 md:mr-2" aria-hidden="true" />
+        <span className="hidden md:inline-flex text-muted-foreground text-sm">Search manga...</span>
+        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 md:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
@@ -114,38 +152,24 @@ const SearchManga = () => {
           {!loading && (mangapillResults.length > 0 || asurascansResults.length > 0) && (
             <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
               <div className="flex flex-col">
-                <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
+                <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
                   Mangapill
                 </div>
                 <CommandGroup>
                   {mangapillResults.length > 0 ? (
-                    mangapillResults.map((manga, idx) => (
-                      <Link href={`/manga/mangapill/${manga.id}`} key={idx}>
-                        <MangaSearchItem
-                          key={`mp-${manga.id}`}
-                          manga={manga}
-                        />
-                      </Link>
-                    ))
+                    renderResults(mangapillResults, "mangapill")
                   ) : (
                     <div className="p-4 text-center text-xs text-muted-foreground">No results from Mangapill</div>
                   )}
                 </CommandGroup>
               </div>
               <div className="flex flex-col">
-                <div className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
+                <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
                   Asurascans
                 </div>
                 <CommandGroup>
                   {asurascansResults.length > 0 ? (
-                    asurascansResults.map((manga, idx) => (
-                      <Link href={`/manga/asurascans/${manga.id}`} key={idx}>
-                        <MangaSearchItem
-                          key={`as-${manga.id}`}
-                          manga={manga}
-                        />
-                      </Link>
-                    ))
+                    renderResults(asurascansResults, "asurascans")
                   ) : (
                     <div className="p-4 text-center text-xs text-muted-foreground">No results from Asurascans</div>
                   )}
@@ -156,45 +180,6 @@ const SearchManga = () => {
         </CommandList>
       </CommandDialog>
     </>
-  );
-};
-
-interface MangaSearchItemProps {
-  manga: Manga;
-}
-
-const MangaSearchItem = ({ manga }: MangaSearchItemProps) => {
-  return (
-    <CommandItem
-      className="flex items-center gap-3 p-2 cursor-pointer"
-    >
-      <div className="relative h-14 w-10 shrink-0 overflow-hidden rounded-sm border border-border">
-        <Image
-          src={ImageProxy(manga.image)}
-          alt={manga.title}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <div className="flex flex-col flex-1 min-w-0">
-        <h4 className="font-medium text-sm line-clamp-1">{manga.title}</h4>
-        <div className="flex items-center gap-2 mt-1">
-          {manga.year && (
-            <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-              <Calendar size={10} />
-              {manga.year}
-            </span>
-          )}
-          {manga.status && (
-            <span className="text-[10px] text-muted-foreground flex items-center gap-0.5 capitalize">
-              <BookOpen size={10} />
-              {manga.status}
-            </span>
-          )}
-        </div>
-
-      </div>
-    </CommandItem>
   );
 };
 

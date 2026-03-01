@@ -12,6 +12,7 @@ import { ConvexClientProvider } from "@/providers/ClerkClientProvider";
 import { DonationProvider } from "@/providers/DonationProvider";
 import { TrackingProvider } from "@/providers/TrackingProvider";
 import Script from "next/script";
+import { ScrollToTop } from "@/components/custom/ui/scroll-to-top";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,18 +56,24 @@ export default function RootLayout({
           <ClerkProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
+              defaultTheme="dark"
               enableSystem
-              disableTransitionOnChange
             >
-              <NextTopLoader color="blue" showSpinner={false} />
+              <NextTopLoader color="var(--brand-start)" showSpinner={false} />
 
               <ToastProvider>
                 <TrackingProvider>
                   <DonationProvider>
                     <div className="flex flex-col min-h-screen">
+                      <a
+                        href="#main-content"
+                        className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-brand-start focus:text-white focus:rounded-lg focus:font-bold focus:shadow-lg"
+                      >
+                        Skip to main content
+                      </a>
                       <Navbar />
-                      <main className="grow">{children}</main>
+                      <main id="main-content" className="grow">{children}</main>
+                      <ScrollToTop />
                       <Footer />
                     </div>
                   </DonationProvider>

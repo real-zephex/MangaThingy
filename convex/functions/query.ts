@@ -15,13 +15,28 @@ export const getReadingHistory = query({
   },
 });
 
-// Check if a specific manga entry exists for a user
+// Check if a specific manga entry exists for a user (with optional provider for composite key)
 export const getExistingEntry = query({
   args: {
     user_id: v.string(),
     manga_id: v.string(),
+    provider: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    if (args.provider) {
+      const entry = await ctx.db
+        .query("reading_history")
+        .withIndex("by_user_manga", (q) =>
+          q
+            .eq("user_id", args.user_id)
+            .eq("id", args.manga_id)
+            .eq("provider", args.provider!),
+        )
+        .first();
+      return entry;
+    }
+
+    // Fallback: lookup by user + manga id only
     const entry = await ctx.db
       .query("reading_history")
       .withIndex("by_user", (q) => q.eq("user_id", args.user_id))
@@ -66,5 +81,43 @@ export const checkExistingEntries = query({
     }
 
     return entriesMap;
+  },
+});
+
+// Get all chapters read for a specific manga by a user
+export const getChapterHistory = query({
+  args: {
+    user_id: v.string(),
+    manga_id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const chapters = await ctx.db
+      .query("chapter_history")
+      .withIndex("by_user_manga", (q) =>
+        q.eq("user_id", args.user_id).eq("manga_id", args.manga_id),
+      )
+      .collect();
+    return chapters;
+  },
+});
+
+// Check if a specific chapter has been read
+export const isChapterRead = query({
+  args: {
+    user_id: v.string(),
+    manga_id: v.string(),
+    chapter_id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const entry = await ctx.db
+      .query("chapter_history")
+      .withIndex("by_user_manga_chapter", (q) =>
+        q
+          .eq("user_id", args.user_id)
+          .eq("manga_id", args.manga_id)
+          .eq("chapter_id", args.chapter_id),
+      )
+      .first();
+    return entry !== null;
   },
 });

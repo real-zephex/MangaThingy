@@ -11,7 +11,7 @@ export function DonateLink() {
       onClick={openDonationModal}
       className="hover:underline underline-offset-4 flex items-center gap-1"
     >
-      <Heart className="h-3 w-3" />
+      <Heart className="h-3 w-3" aria-hidden="true" />
       Donate
     </button>
   );

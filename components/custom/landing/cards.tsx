@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Manga } from "@/lib/services/manga.types";
 import { ImageProxy } from "@/lib/services/image.proxy";
 import { Badge } from "@/components/ui/badge";
@@ -18,227 +17,186 @@ interface MangaCardProps {
 }
 
 export const MangaCard = ({ manga, variant = "default" }: MangaCardProps) => {
-  const sourceColor = manga.source === "asurascans" ? "bg-orange-500" : "bg-blue-500";
+  const sourceColor =
+    manga.source === "asurascans" ? "bg-brand-start" : "bg-brand-end";
 
   if (variant === "compact") {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -5 }}
-        transition={{ duration: 0.3 }}
-        viewport={{ once: true }}
-      >
-        <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border group cursor-pointer relative select-none">
-          <div className="relative h-64 overflow-hidden">
-            <Link
-              href={`/manga/${manga.source}/${manga.id}`}
-              className="absolute inset-0 z-10"
-            />
-            <Image
-              src={ImageProxy(manga.image || manga.images)}
-              alt={manga.title}
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-background/90 via-background/20 to-transparent opacity-60"></div>
+      <Card className="overflow-hidden transition-colors duration-200 bg-card border-border/50 hover:border-brand-start/30 group cursor-pointer relative select-none p-3">
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/manga/${manga.source}/${manga.id}`}
+            className="shrink-0"
+          >
+            <div className="relative w-14 h-18 rounded-lg overflow-hidden border border-border/30">
+              <Image
+                src={ImageProxy(manga.image || manga.images)}
+                alt=""
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          </Link>
 
-            {/* <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
-              {manga.source && (
-                <Badge className={cn("text-[10px] px-1.5 py-0 h-5 uppercase font-bold border-none text-white", sourceColor)}>
-                  {manga.source}
+          <div className="flex-1 min-w-0 space-y-1.5">
+            <Link href={`/manga/${manga.source}/${manga.id}`}>
+              <h3 className="font-semibold line-clamp-1 text-foreground text-sm group-hover:text-brand-start transition-colors">
+                {manga.title}
+              </h3>
+            </Link>
+            <div className="flex items-center gap-2">
+              {manga.type && (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0 h-4 bg-secondary/80 font-medium"
+                >
+                  {manga.type}
                 </Badge>
               )}
-            </div> */}
-
-            {manga.status && (
-              <Badge className="absolute top-2 right-2 bg-primary/90 hover:bg-primary flex items-center gap-1 z-20">
-                <BookOpen size={10} />
-                <span className="text-[10px] uppercase font-bold">
-                  {manga.status}
-                </span>
-              </Badge>
-            )}
-          </div>
-
-          <div className="p-3 space-y-2">
-            <h3 className="font-bold line-clamp-1 text-foreground text-sm group-hover:text-primary transition-colors">
-              {manga.title}
-            </h3>
-
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex gap-1">
-                {manga.type && (
-                  <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
-                    {manga.type}
-                  </Badge>
-                )}
-              </div>
-              <TrackManga data={manga} />
+              <div
+                className={cn("w-1.5 h-1.5 rounded-full", sourceColor)}
+                title={manga.source}
+              />
             </div>
           </div>
-        </Card>
-      </motion.div>
+
+          <div className="shrink-0">
+            <TrackManga data={manga} />
+          </div>
+        </div>
+      </Card>
     );
   }
 
   if (variant === "featured") {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.4 }}
-        viewport={{ once: true }}
-      >
-        <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 bg-card border-border group select-none relative">
-          <div className="relative h-112.5 overflow-hidden">
-            <Image
-              src={ImageProxy(manga.image || manga.images)}
-              alt={manga.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent"></div>
-
-            {/* <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-              {manga.source && (
-                <Badge className={cn("text-xs px-2 py-0.5 uppercase font-bold border-none text-white shadow-lg", sourceColor)}>
-                  {manga.source}
-                </Badge>
-              )}
-            </div> */}
-
-            <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4 z-20">
-              <div className="space-y-2">
-                <h3 className="font-black text-2xl md:text-3xl text-white line-clamp-2 leading-tight drop-shadow-md">
-                  {manga.title}
-                </h3>
-                {manga.description && (
-                  <p className="text-sm text-gray-200 line-clamp-3 leading-relaxed drop-shadow-sm">
-                    {manga.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex gap-3 flex-wrap pt-2">
-                <Link href={`/manga/${manga.source}/${manga.id}`}>
-                  <Button className="flex items-center gap-2 bg-white text-black hover:bg-gray-200 font-bold px-6">
-                    <Play size={18} fill="currentColor" />
-                    Read Now
-                  </Button>
-                </Link>
-                <TrackManga data={manga} />
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute top-4 right-4 flex gap-2 flex-wrap max-w-xs justify-end z-20">
-            {manga.status && (
-              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 shadow-lg">
-                <BookOpen size={12} />
-                <span className="uppercase font-bold text-[10px]">
-                  {manga.status}
-                </span>
-              </Badge>
-            )}
-            {manga.type && (
-              <Badge variant="secondary" className="flex items-center gap-1 shadow-lg backdrop-blur-md bg-secondary/80">
-                <Layers size={12} />
-                <span className="uppercase font-bold text-[10px]">{manga.type}</span>
-              </Badge>
-            )}
-          </div>
-        </Card>
-      </motion.div>
-    );
-  }
-
-  // Default card
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.3 }}
-      viewport={{ once: true }}
-    >
-      <Card className="overflow-hidden hover:shadow-2xl transition-all duration-500 bg-card border-border group cursor-pointer relative">
-        <div className="relative h-80 overflow-hidden">
-          <Link
-            href={`/manga/${manga.source}/${manga.id}`}
-            className="absolute inset-0 z-20 h-full w-full"
-          />
+      <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-card border-border/50 group select-none relative">
+        <div className="relative h-80 md:h-96 overflow-hidden">
           <Image
             src={ImageProxy(manga.image || manga.images)}
-            alt={manga.title}
+            alt=""
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-700"
+            className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-80"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
 
-          {/* <div className="absolute top-3 left-3 flex flex-col gap-2 z-30">
-            {manga.source && (
-              <Badge className={cn("text-[10px] px-2 py-0.5 uppercase font-bold border-none text-white shadow-md", sourceColor)}>
-                {manga.source}
-              </Badge>
-            )}
-          </div> */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 space-y-3 z-20">
+            <div className="space-y-2">
+              <h3 className="font-black text-xl md:text-2xl text-foreground line-clamp-2 leading-tight drop-shadow-md">
+                {manga.title}
+              </h3>
+              {manga.description && (
+                <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                  {manga.description}
+                </p>
+              )}
+            </div>
 
+            <div className="flex gap-3 flex-wrap pt-1">
+              <Link href={`/manga/${manga.source}/${manga.id}`}>
+                <Button className="flex items-center gap-2 bg-brand-start text-white hover:bg-brand-start/90 font-semibold px-5 shadow-lg shadow-brand-shadow">
+                  <Play size={16} fill="currentColor" aria-hidden="true" />
+                  Read Now
+                </Button>
+              </Link>
+              <TrackManga data={manga} />
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute top-3 right-3 flex gap-2 flex-wrap max-w-xs justify-end z-20">
           {manga.status && (
-            <Badge className="absolute top-3 right-3 bg-primary/90 hover:bg-primary flex items-center gap-1 z-30 shadow-md">
-              <BookOpen size={12} />
-              <span className="text-[10px] uppercase font-bold">
-                {manga.status}
-              </span>
+            <Badge className="bg-brand-start/90 text-white flex items-center gap-1 shadow-md border-none text-[10px] uppercase font-bold tracking-wide px-2 py-0.5">
+              <BookOpen size={10} aria-hidden="true" />
+              {manga.status}
+            </Badge>
+          )}
+          {manga.type && (
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 shadow-md backdrop-blur-md bg-background/70 border-none text-[10px] uppercase font-bold tracking-wide px-2 py-0.5"
+            >
+              <Layers size={10} aria-hidden="true" />
+              {manga.type}
             </Badge>
           )}
         </div>
+      </Card>
+    );
+  }
 
-        <div className="p-4 space-y-3 relative z-10">
-          <h3 className="font-bold line-clamp-1 text-foreground text-base md:text-lg group-hover:text-primary transition-colors duration-300">
-            {manga.title}
-          </h3>
+  // Default card — persistent footer, CSS-only hover
+  return (
+    <Card className="overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-card border-border/50 group cursor-pointer relative">
+      <Link href={`/manga/${manga.source}/${manga.id}`} className="block">
+        <div className="relative aspect-2/3 overflow-hidden">
+          <Image
+            src={ImageProxy(manga.image || manga.images)}
+            alt=""
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          {manga.description && (
-            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-              {manga.description}
-            </p>
-          )}
-
-          <div className="flex items-center justify-between pt-1">
-            <div className="flex flex-wrap gap-1.5">
-              {manga.type && (
-                <Badge
-                  variant="outline"
-                  className="text-[10px] uppercase font-bold px-1.5 py-0 h-5"
-                >
-                  {manga.type}
-                </Badge>
-              )}
-              {manga.year && (
-                <Badge
-                  variant="outline"
-                  className="text-[10px] uppercase font-bold px-1.5 py-0 h-5 flex items-center gap-1"
-                >
-                  <Calendar size={10} />
-                  {manga.year}
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-2">
-            <Link href={`/manga/${manga.source}/${manga.id}`} className="flex-1">
-              <Button size="sm" className="w-full bg-linear-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-none font-bold shadow-md transition-all duration-300">
-                <Play size={14} className="mr-1" fill="currentColor" />
-                Read
-              </Button>
-            </Link>
+          {/* Track button — hover-reveal */}
+          <div
+            className="absolute top-2.5 left-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30"
+            onClick={(e) => e.preventDefault()}
+          >
             <TrackManga data={manga} />
           </div>
+
+          {manga.status && (
+            <Badge className="absolute top-2.5 right-2.5 bg-brand-start/90 text-white flex items-center gap-1 z-30 shadow-sm border border-brand-start/20 text-[10px] uppercase font-bold tracking-wide px-2 py-0.5">
+              <BookOpen size={10} aria-hidden="true" />
+              {manga.status}
+            </Badge>
+          )}
         </div>
-      </Card>
-    </motion.div>
+      </Link>
+
+      {/* Persistent card footer */}
+      <div className="p-3.5 space-y-2.5">
+        <div className="space-y-1.5">
+          <div className="flex flex-wrap gap-1">
+            {manga.type && (
+              <Badge
+                variant="secondary"
+                className="text-[10px] uppercase font-semibold px-1.5 py-0 h-4 bg-secondary/70 border-none"
+              >
+                {manga.type}
+              </Badge>
+            )}
+            {manga.year && (
+              <Badge
+                variant="secondary"
+                className="text-[10px] uppercase font-semibold px-1.5 py-0 h-4 flex items-center gap-0.5 bg-secondary/70 border-none"
+              >
+                <Calendar size={8} aria-hidden="true" />
+                {manga.year}
+              </Badge>
+            )}
+          </div>
+          <h3 className="font-semibold line-clamp-1 text-foreground text-sm group-hover:text-brand-start transition-colors duration-200">
+            {manga.title}
+          </h3>
+        </div>
+
+        <Link href={`/manga/${manga.source}/${manga.id}`} className="block">
+          <Button
+            size="sm"
+            className="w-full bg-brand-start hover:bg-brand-start/90 text-white border-none font-semibold shadow-sm transition-colors duration-200"
+          >
+            <Play
+              size={13}
+              className="mr-1"
+              fill="currentColor"
+              aria-hidden="true"
+            />
+            Read
+          </Button>
+        </Link>
+      </div>
+    </Card>
   );
 };

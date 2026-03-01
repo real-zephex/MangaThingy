@@ -14,7 +14,6 @@ import {
   UploadIcon,
   ImportIcon,
   MenuIcon,
-  Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -43,7 +42,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useTracking } from "@/providers/TrackingProvider";
-import { useDonation } from "@/providers/DonationProvider";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -53,7 +51,6 @@ const Navbar = () => {
     { name: "Library", href: "/library", icon: Library },
   ];
   const syncTracking = useTracking();
-  const { openDonationModal } = useDonation();
 
   const importData = () => {
     syncTracking.provider.syncToLocal();
@@ -64,176 +61,180 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-linear-to-br from-orange-500 to-pink-500 rounded-xl group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-orange-500/20">
-              <BookOpen className="w-6 h-6 text-white" />
+    <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <div className="container mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
+        {/* Left: Logo + Nav */}
+        <div className="flex items-center gap-10">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="p-1.5 bg-brand-start rounded-lg group-hover:scale-105 transition-transform duration-200 shadow-sm shadow-brand-shadow">
+              <BookOpen className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-xl font-bold tracking-tight hidden sm:block">
-              Otaku{" "}
-              <span className="bg-linear-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
-                Oasis
-              </span>
+            <h2 className="text-lg font-bold tracking-tight hidden sm:block">
+              Otaku <span className="text-brand-start">Oasis</span>
             </h2>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
-              const isActive = pathname === link.href;
+              const isActive =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                    "relative flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors duration-200",
                     isActive
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "text-muted-foreground hover:text-primary hover:bg-primary/5",
+                      ? "text-brand-start"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   <Icon className="w-4 h-4" />
                   {link.name}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-brand-start rounded-full" />
+                  )}
                 </Link>
               );
             })}
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Right: Search + Theme + Auth */}
+        <div className="flex items-center gap-3">
           <SearchManga />
+          <ModeToggle />
 
-          <div className="flex items-center gap-2 border-l pl-2 ml-1">
-            <Link
-              href="https://github.com/real-zephex/MangaThingy"
-              target="_blank"
-              className="p-2 text-muted-foreground hover:text-primary transition-colors hidden sm:flex"
-            >
-              <GitBranchPlus className="w-5 h-5" />
-            </Link>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={openDonationModal}
-              className="hidden sm:flex text-muted-foreground hover:text-primary"
-            >
-              <Heart className="w-4 h-4 mr-1" />
-              Donate
-            </Button>
-            <ModeToggle />
-            <div className="flex flex-row items-center gap-2">
-              <SignedOut>
-                <ButtonGroup>
-                  <SignInButton>
-                    <Button variant="secondary" size="sm">
-                      Sign In
-                    </Button>
-                  </SignInButton>
-                  <SignUpButton>
-                    <Button variant="outline" size="sm">
-                      Sign Up
-                    </Button>
-                  </SignUpButton>
-                </ButtonGroup>
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="sm">
-                      <MenuIcon />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Sync Settings</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="flex flex-row items-center gap-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        importData();
-                      }}
-                    >
-                      <ImportIcon />
-                      <p> Import from database</p>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="flex flex-row items-center gap-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        exportData();
-                      }}
-                    >
-                      <UploadIcon />
-                      <p>Export to database</p>
-                    </DropdownMenuItem>
-                    <div className="flex flex-row items-center px-2 py-1 gap-2 w-50">
-                      <InfoIcon className="h-3 w-3" />
-                      <p className="text-xs font-mono">2 minutes interval.</p>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SignedIn>
-            </div>
+          <div className="h-5 w-px bg-border hidden sm:block" />
 
-            <div className="md:hidden ml-1">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <Menu className="h-5 w-5" />
+          <div className="flex items-center gap-2">
+            <SignedOut>
+              <ButtonGroup>
+                <SignInButton>
+                  <Button variant="secondary" size="sm" className="font-medium">
+                    Sign In
                   </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-75 sm:w-100">
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2 text-left">
-                      <div className="p-1.5 bg-linear-to-br from-orange-500 to-pink-500 rounded-lg">
-                        <BookOpen className="w-5 h-5 text-white" />
-                      </div>
-                      Otaku Oasis
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="flex flex-col gap-2 mt-8">
-                    {navLinks.map((link) => {
-                      const Icon = link.icon;
-                      const isActive = pathname === link.href;
-                      return (
-                        <Link
-                          key={link.name}
-                          href={link.href}
-                          className={cn(
-                            "flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all",
-                            isActive
-                              ? "bg-primary text-primary-foreground shadow-md"
-                              : "text-muted-foreground hover:bg-muted",
-                          )}
-                        >
-                          <Icon className="w-5 h-5" />
-                          {link.name}
-                        </Link>
-                      );
-                    })}
-                    <div className="h-px bg-border my-2" />
-                    <Link
-                      href="https://github.com/real-zephex/MangaThingy"
-                      target="_blank"
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-muted-foreground hover:bg-muted"
-                    >
-                      <GitBranchPlus className="w-5 h-5" />
-                      GitHub Repository
-                    </Link>
-                    <button
-                      onClick={() => openDonationModal()}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-muted-foreground hover:bg-muted w-full text-left"
-                    >
-                      <Heart className="w-5 h-5" />
-                      Donate
-                    </button>
+                </SignInButton>
+                <SignUpButton>
+                  <Button
+                    size="sm"
+                    className="bg-brand-start hover:bg-brand-start/90 text-white font-medium"
+                  >
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+              </ButtonGroup>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                    aria-label="Sync settings"
+                  >
+                    <MenuIcon className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Sync Settings</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="flex flex-row items-center gap-2 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      importData();
+                    }}
+                  >
+                    <ImportIcon className="h-4 w-4" />
+                    Import from database
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex flex-row items-center gap-2 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      exportData();
+                    }}
+                  >
+                    <UploadIcon className="h-4 w-4" />
+                    Export to database
+                  </DropdownMenuItem>
+                  <div className="flex flex-row items-center px-2 py-1.5 gap-2">
+                    <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground font-mono">
+                      2 min auto-sync interval
+                    </p>
                   </div>
-                </SheetContent>
-              </Sheet>
-            </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SignedIn>
+          </div>
+
+          {/* Mobile hamburger */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  aria-label="Open navigation menu"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80 sm:w-96">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-2 text-left">
+                    <div className="p-1.5 bg-brand-start rounded-lg">
+                      <BookOpen className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="font-bold">
+                      Otaku <span className="text-brand-start">Oasis</span>
+                    </span>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-1 mt-8">
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const isActive =
+                      link.href === "/"
+                        ? pathname === "/"
+                        : pathname.startsWith(link.href);
+                    return (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors",
+                          isActive
+                            ? "bg-brand-start/10 text-brand-start border-l-2 border-brand-start"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        )}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {link.name}
+                      </Link>
+                    );
+                  })}
+                  <div className="h-px bg-border my-3" />
+                  <Link
+                    href="https://github.com/real-zephex/MangaThingy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    <GitBranchPlus className="w-5 h-5" />
+                    GitHub
+                  </Link>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

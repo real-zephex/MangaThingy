@@ -6,8 +6,8 @@ import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
-import { MoveLeft } from "lucide-react";
-import type { Metadata } from 'next';
+import { ChevronLeft } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 type PageParams = {
@@ -20,7 +20,11 @@ const functionMap = {
   asurascans: AsurascansService,
 };
 
-export async function generateMetadata({ params }: { params: Promise<PageParams> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<PageParams>;
+}): Promise<Metadata> {
   const param = await params;
   const provider = param.provider;
   const id = param.id.join("/");
@@ -36,7 +40,8 @@ export async function generateMetadata({ params }: { params: Promise<PageParams>
 
   return {
     title: `${mangaInfo.results.title}`,
-    description: mangaInfo.results.description || "Read manga online at Otaku Oasis.",
+    description:
+      mangaInfo.results.description || "Read manga online at Otaku Oasis.",
     openGraph: {
       images: [
         {
@@ -45,7 +50,6 @@ export async function generateMetadata({ params }: { params: Promise<PageParams>
         },
       ],
     },
-
   };
 }
 
@@ -59,23 +63,21 @@ const MangaInfoPage = async ({ params }: { params: Promise<PageParams> }) => {
   if (!mangaInfo || !mangaInfo.results) {
     return (
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-6">
-          <Link href="/">
-            <Button variant="ghost" className="gap-2">
-              <MoveLeft className="h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-2">Manga Not Found</h1>
-            <p className="text-muted-foreground mb-4">
+        <Link href="/">
+          <Button variant="ghost" size="sm" className="gap-1.5 mb-6 text-muted-foreground hover:text-foreground">
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </Link>
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center space-y-3">
+            <h1 className="text-2xl font-bold">Manga Not Found</h1>
+            <p className="text-muted-foreground text-sm max-w-sm">
               Could not load manga information. Please try again.
             </p>
-            <Link href="/">
-              <Button>Go Back Home</Button>
-            </Link>
+            <Button asChild size="sm" className="mt-2">
+              <Link href="/">Go Back Home</Link>
+            </Button>
           </div>
         </div>
       </main>
@@ -83,34 +85,22 @@ const MangaInfoPage = async ({ params }: { params: Promise<PageParams> }) => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-6">
-        <Link href="/">
-          <Button variant="ghost" className="gap-2">
-            <MoveLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
-        </Link>
-      </div>
+    <main className="container mx-auto px-4 md:px-8 py-6 max-w-7xl">
+      <Link href="/">
+        <Button variant="ghost" size="sm" className="gap-1.5 mb-4 text-muted-foreground hover:text-foreground">
+          <ChevronLeft className="h-4 w-4" />
+          Back
+        </Button>
+      </Link>
 
       <MangaInfoHeader manga={mangaInfo.results} provider={provider} />
 
-      <div className="space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
-          <div className="space-y-1">
-            <h2 className="text-3xl font-black tracking-tight">Chapters</h2>
-            <p className="text-muted-foreground font-medium">
-              Explore the latest releases and catch up on the story
-            </p>
-          </div>
-          <div className="flex items-center gap-2 bg-muted/50 px-4 py-2 rounded-xl border border-border/50">
-            <span className="text-sm font-bold text-primary">
-              {mangaInfo.results.chapters.length}
-            </span>
-            <span className="text-sm font-medium text-muted-foreground">
-              Total Chapters
-            </span>
-          </div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between border-b border-border/50 pb-4">
+          <h2 className="text-xl font-bold tracking-tight">Chapters</h2>
+          <span className="text-xs font-medium text-muted-foreground tabular-nums">
+            {mangaInfo.results.chapters.length} total
+          </span>
         </div>
 
         <ChapterButton
