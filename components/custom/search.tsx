@@ -3,6 +3,8 @@
 import { SearchIcon, Loader2, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import {
   CommandDialog,
@@ -16,14 +18,11 @@ import { Button } from "@/components/ui/button";
 import { MangapillService, AsurascansService } from "@/lib/services/manga.actions";
 import { Manga } from "@/lib/services/manga.types";
 import { ImageProxy } from "@/lib/services/image.proxy";
-import { useEffect, useState, useCallback } from "react";
 
 const SearchManga = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [mangapillResults, setMangapillResults] = useState<Manga[]>([]);
-  const [asurascansResults, setAsurascansResults] = useState<Manga[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -37,48 +36,46 @@ const SearchManga = () => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  const performSearch = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setMangapillResults([]);
-      setAsurascansResults([]);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const [mpResults, asResults] = await Promise.all([
-        MangapillService.search(searchQuery),
-        AsurascansService.search(searchQuery),
-      ]);
-
-
-      setMangapillResults(mpResults?.results || []);
-      setAsurascansResults(asResults?.results || []);
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (query) {
-        performSearch(query);
-      } else {
-        setMangapillResults([]);
-        setAsurascansResults([]);
-      }
+      setDebouncedQuery(query.trim());
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [query, performSearch]);
+  }, [query]);
+
+  const {
+    data,
+    error,
+    isFetching,
+  } = useQuery({
+    queryKey: ["manga-search", debouncedQuery],
+    queryFn: async (): Promise<{
+      mangapillResults: Manga[];
+      asurascansResults: Manga[];
+    }> => {
+      const [mpResults, asResults] = await Promise.all([
+        MangapillService.search(debouncedQuery),
+        AsurascansService.search(debouncedQuery),
+      ]);
+
+      return {
+        mangapillResults: mpResults?.results || [],
+        asurascansResults: asResults?.results || [],
+      };
+    },
+    enabled: debouncedQuery.length > 0,
+  });
+
+  const hasQuery = query.trim().length > 0;
+  const loading = hasQuery && isFetching;
+  const mangapillResults = hasQuery ? (data?.mangapillResults ?? []) : [];
+  const asurascansResults = hasQuery ? (data?.asurascansResults ?? []) : [];
 
   const onSelect = (source: string, id: string) => {
     setOpen(false);
     setQuery("");
-    setMangapillResults([]);
-    setAsurascansResults([]);
+    setDebouncedQuery("");
     router.push(`/manga/${source}/${id}`);
   };
 
@@ -144,11 +141,15 @@ const SearchManga = () => {
             </div>
           )}
 
-          {!loading && query && mangapillResults.length === 0 && asurascansResults.length === 0 && (
+          {!loading && hasQuery && error && debouncedQuery === query.trim() && (
+            <CommandEmpty>Search failed. Please try again.</CommandEmpty>
+          )}
+
+          {!loading && hasQuery && !error && mangapillResults.length === 0 && asurascansResults.length === 0 && (
             <CommandEmpty>No results found for &quot;{query}&quot;.</CommandEmpty>
           )}
 
-          {!loading && (mangapillResults.length > 0 || asurascansResults.length > 0) && (
+          {!loading && hasQuery && !error && (mangapillResults.length > 0 || asurascansResults.length > 0) && (
             <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
               <div className="flex flex-col">
                 <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
