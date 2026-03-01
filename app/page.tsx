@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import HeroSlider from "@/components/custom/landing/heroSlider";
+import dynamic from "next/dynamic";
 import { RecentlyRead } from "@/components/custom/landing/recently-read";
 import { PopularSection } from "@/components/custom/landing/popular-section";
 import { FeaturedSection } from "@/components/custom/landing/featured-section";
@@ -10,6 +10,15 @@ import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
+
+// Dynamically import HeroSlider only when needed (saves 50KB bundle)
+const HeroSlider = dynamic(
+  () => import("@/components/custom/landing/heroSlider"),
+  {
+    loading: () => <SkeletonHero />,
+    ssr: true, // SSR enabled for initial page load
+  },
+);
 
 const HeroSection = async () => {
   const [mangapillNewest, asurascansPopular] = await Promise.all([
