@@ -32,26 +32,14 @@ export const MangaInfoHeader = ({ manga, provider }: MangaInfoHeaderProps) => {
   metaItems.push(`${manga.chapters.length} Chapters`);
 
   return (
-    <section className="relative -mx-4 md:-mx-8 mb-12 overflow-hidden">
-      {/* Full-bleed background image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src={ImageProxy(manga.image || manga.images)}
-          alt=""
-          fill
-          className="object-cover scale-110 blur-2xl"
-          priority
-        />
-        {/* Heavy gradient overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/70 to-transparent" />
-      </div>
+    <section className="relative -mx-4 md:-mx-8 mb-12 border-b border-border/20 bg-background">
+      <div className="absolute top-0 left-0 right-0 h-64 bg-muted/30 border-b border-border/20 z-0" />
 
       <div className="relative z-10 container mx-auto px-4 md:px-8 pt-12 pb-10">
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Cover Image */}
           <div className="shrink-0 mx-auto lg:mx-0 w-56 md:w-64">
-            <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-2xl ring-1 ring-white/10">
+            <div className="relative aspect-[2/3] rounded-[4px] overflow-hidden border border-border/40 bg-muted mt-8">
               <Image
                 src={ImageProxy(manga.image || manga.images)}
                 alt={manga.title || "Manga Cover"}
@@ -85,7 +73,7 @@ export const MangaInfoHeader = ({ manga, provider }: MangaInfoHeaderProps) => {
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight pt-8">
               {manga.title || "Untitled"}
             </h1>
 
@@ -113,8 +101,8 @@ export const MangaInfoHeader = ({ manga, provider }: MangaInfoHeaderProps) => {
                   ? (manga.genres as string).split(",").map((genre: string) => (
                       <Badge
                         key={genre.trim()}
-                        variant="secondary"
-                        className="rounded-sm px-2.5 py-1 text-xs font-medium bg-muted/50 border border-border/30 hover:bg-brand-start/10 hover:text-brand-start hover:border-brand-start/30 transition-colors"
+                        variant="outline"
+                        className="rounded-sm px-2 py-0.5 text-xs font-mono bg-transparent border-border/40 hover:bg-muted transition-colors"
                       >
                         {genre.trim()}
                       </Badge>
@@ -122,8 +110,8 @@ export const MangaInfoHeader = ({ manga, provider }: MangaInfoHeaderProps) => {
                   : manga.genres?.map((genre) => (
                       <Badge
                         key={genre}
-                        variant="secondary"
-                        className="rounded-sm px-2.5 py-1 text-xs font-medium bg-muted/50 border border-border/30 hover:bg-brand-start/10 hover:text-brand-start hover:border-brand-start/30 transition-colors"
+                        variant="outline"
+                        className="rounded-sm px-2 py-0.5 text-xs font-mono bg-transparent border-border/40 hover:bg-muted transition-colors"
                       >
                         {genre}
                       </Badge>

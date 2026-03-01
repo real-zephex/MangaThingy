@@ -55,12 +55,12 @@ export const RecentlyRead = () => {
                   href={`/manga/${item.provider}/${item.id}`}
                   className="shrink-0 group"
                 >
-                  <div className="relative w-20 h-28 rounded-lg overflow-hidden border-2 border-border/30 shadow-sm group-hover:border-brand-start/50 group-hover:shadow-md transition-all duration-200">
+                  <div className="relative w-20 h-28 rounded-[4px] border border-border/30 overflow-hidden bg-muted group-hover:border-border/80 transition-colors duration-200">
                     <Image
                       src={ImageProxy(item.image)}
                       alt={item.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-cover group-hover:opacity-90 transition-opacity duration-300"
                     />
                   </div>
                 </Link>

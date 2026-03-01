@@ -24,7 +24,7 @@ export const AsurascansService = {
   getLatest: cache((page: number = 1): Promise<Results<Manga>> =>
     fetchWrapper(`/asurascans/latest/${page}`)),
   getGenres: cache((type: string): Promise<Results<Manga>> =>
-    fetchWrapper(`/asurascans/genres/${type}`)),
+    fetchWrapper(`/asurascans/genres/${encodeURIComponent(type)}`)),
   getGenreList: cache((): Promise<Results<string>> =>
     fetchWrapper("/asurascans/genre-list")),
 };

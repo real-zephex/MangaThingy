@@ -47,12 +47,12 @@ const Navbar = () => {
   }, [syncToLocal]);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 w-full border-b border-border/20 bg-background/95 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 md:h-18 flex items-center justify-between">
         {/* Left: Logo + Nav */}
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="p-1.5 bg-brand-start rounded-lg group-hover:scale-105 transition-transform duration-200 shadow-sm shadow-brand-shadow">
+            <div className="p-1.5 bg-brand-start rounded-sm group-hover:bg-brand-end transition-colors duration-200">
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             <h2 className="text-lg font-bold tracking-tight hidden sm:block">
@@ -81,7 +81,7 @@ const Navbar = () => {
                   <Icon className="w-4 h-4" />
                   {link.name}
                   {isActive && (
-                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-brand-start rounded-full" />
+                    <span className="absolute -bottom-[19px] left-0 right-0 h-[2px] bg-brand-start" />
                   )}
                 </Link>
               );
@@ -145,7 +145,7 @@ const Navbar = () => {
               <SheetContent side="right" className="w-80 sm:w-96">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2 text-left">
-                    <div className="p-1.5 bg-brand-start rounded-lg">
+                    <div className="p-1.5 bg-brand-start rounded-[4px]">
                       <BookOpen className="w-4 h-4 text-white" />
                     </div>
                     <span className="font-bold">

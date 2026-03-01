@@ -50,7 +50,7 @@ const HeroSlider = ({
 
   return (
     <div
-      className="relative"
+      className="relative border border-border/20 bg-background"
       role="region"
       aria-roledescription="carousel"
       aria-label="Featured manga carousel"
@@ -69,7 +69,7 @@ const HeroSlider = ({
           paginationBulletMessage: "Go to slide {{index}}",
         }}
         loop={true}
-        className="h-[420px] md:h-[560px] select-none bg-card rounded-2xl overflow-hidden shadow-xl"
+        className="h-[420px] md:h-[500px] select-none"
       >
         {combinedResults.map((manga, idx) => {
           const sourceColor =
@@ -79,60 +79,62 @@ const HeroSlider = ({
               key={`hero-${manga.source}-${manga.id}`}
               aria-roledescription="slide"
             >
-              <div className="w-full h-full relative overflow-hidden group">
-                {/* Background Image */}
-                <Image
-                  src={ImageProxy(manga.image)}
-                  alt={manga.title}
-                  fill
-                  className="object-cover md:object-bottom absolute inset-0 group-hover:scale-[1.03] transition-transform duration-700"
-                  priority={idx === 0}
-                />
-
-                {/* Gradient Overlays — stronger for readability */}
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent z-10" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent z-10" />
+              <div className="w-full h-full relative overflow-hidden flex flex-col justify-end">
+                {/* Background Image Container */}
+                <div className="absolute inset-0 md:left-1/3 md:w-2/3 bg-muted border-l border-border/20">
+                  <Image
+                    src={ImageProxy(manga.image)}
+                    alt={manga.title}
+                    fill
+                    className="object-cover object-top opacity-60 md:opacity-100"
+                    priority={idx === 0}
+                  />
+                  {/* Subtle fade for mobile; stark edge for desktop */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background md:hidden" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent hidden md:block w-[40%]" />
+                </div>
 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-14 pb-16 md:pb-20 text-foreground z-20">
-                  <div className="max-w-lg space-y-4">
+                <div className="relative z-20 w-full md:w-1/2 lg:w-[45%] h-full flex flex-col justify-end md:justify-center p-6 md:p-12 pb-16 bg-gradient-to-t from-background via-background/90 md:via-background/0 md:bg-none">
+                  <div className="space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
+                      <div
+                        className={cn("w-2 h-2 rounded-sm", sourceColor)}
+                        title={manga.source}
+                      />
                       {manga.source && (
-                        <Badge
-                          className={cn(
-                            "text-[10px] px-2 py-0.5 uppercase font-bold border-none text-white shadow-md",
-                            sourceColor,
-                          )}
-                        >
+                        <span className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">
                           {manga.source}
-                        </Badge>
+                        </span>
                       )}
                       {manga.status && (
-                        <Badge className="flex items-center gap-1 bg-foreground/10 backdrop-blur-sm text-foreground font-bold uppercase text-[10px] border-none">
-                          <BookOpen size={10} aria-hidden="true" />
-                          {manga.status}
-                        </Badge>
+                        <>
+                          <span className="text-[10px] text-muted-foreground">•</span>
+                          <span className="text-[10px] uppercase font-mono tracking-wider text-foreground">
+                            {manga.status}
+                          </span>
+                        </>
                       )}
                     </div>
 
-                    <h2 className="text-3xl md:text-5xl font-black line-clamp-2 leading-tight tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-bold line-clamp-2 leading-tight tracking-tight">
                       {manga.title}
                     </h2>
 
                     {manga.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed max-w-md">
+                      <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed max-w-lg md:pr-6">
                         {manga.description}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-3 pt-1">
+                    <div className="flex items-center gap-3 pt-4">
                       <Link href={`/manga/${manga.source}/${manga.id}`}>
                         <Button
                           size="lg"
-                          className="flex items-center gap-2 bg-brand-start hover:bg-brand-start/90 text-white border-none font-semibold px-7 shadow-lg shadow-brand-shadow transition-colors duration-200"
+                          className="flex items-center gap-2 bg-foreground hover:bg-foreground/90 text-background font-medium px-8 h-12 rounded-sm transition-colors duration-200"
                         >
                           <Play
-                            size={18}
+                            size={16}
                             fill="currentColor"
                             aria-hidden="true"
                           />
@@ -143,9 +145,9 @@ const HeroSlider = ({
                         <Button
                           size="lg"
                           variant="outline"
-                          className="hidden sm:flex items-center gap-2 border-2 border-border/50 font-semibold px-7 bg-background/30 backdrop-blur-sm hover:bg-background/50 transition-colors duration-200"
+                          className="hidden sm:flex items-center gap-2 border border-border/40 font-medium px-6 h-12 rounded-sm bg-background hover:bg-muted transition-colors duration-200"
                         >
-                          <Plus size={18} aria-hidden="true" />
+                          <Plus size={16} aria-hidden="true" />
                           Add to Library
                         </Button>
                       </TrackManga>
@@ -159,26 +161,25 @@ const HeroSlider = ({
       </Swiper>
 
       {/* Bottom controls: slide counter + pause */}
-      <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
-        <span className="text-xs font-mono text-foreground/60 bg-background/40 backdrop-blur-sm px-2.5 py-1 rounded-full">
+      <div className="absolute bottom-4 right-4 md:bottom-6 md:right-8 z-30 flex items-center gap-3 border border-border/20 bg-background/80 backdrop-blur-md px-3 py-1.5 shadow-sm">
+        <span className="text-xs font-mono font-medium tracking-widest text-foreground">
           {String(activeIndex + 1).padStart(2, "0")} /{" "}
           {String(combinedResults.length).padStart(2, "0")}
         </span>
-        <Button
-          variant="secondary"
-          size="icon"
+        <div className="w-px h-3 bg-border/40" />
+        <button
           onClick={toggleAutoplay}
           aria-label={
             isPaused ? "Resume carousel autoplay" : "Pause carousel autoplay"
           }
-          className="rounded-full shadow-md bg-background/60 backdrop-blur-sm hover:bg-background/80 h-8 w-8"
+          className="text-foreground hover:text-brand-start transition-colors"
         >
           {isPaused ? (
-            <Play size={14} aria-hidden="true" />
+            <Play size={12} fill="currentColor" aria-hidden="true" />
           ) : (
-            <Pause size={14} aria-hidden="true" />
+            <Pause size={12} fill="currentColor" aria-hidden="true" />
           )}
-        </Button>
+        </button>
       </div>
     </div>
   );

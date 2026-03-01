@@ -161,7 +161,7 @@ const ChapterButton = ({
             placeholder="Search chapters..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-9 rounded-lg border-border/50 bg-card text-sm"
+            className="pl-10 h-9 rounded-[4px] border-border/40 bg-background text-sm focus-visible:ring-1 focus-visible:ring-brand-start"
           />
         </div>
 
@@ -177,7 +177,7 @@ const ChapterButton = ({
       </div>
 
       {/* Chapter list */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border/30 rounded-lg overflow-hidden border border-border/40">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border/20 rounded-[4px] overflow-hidden border border-border/40">
         {displayedChapters.map((chap) => {
           const isRead = readChapterIds.has(chap.id);
           return (
@@ -194,8 +194,8 @@ const ChapterButton = ({
                 }
               }}
               className={cn(
-                "group relative flex items-center gap-3 px-4 py-3 bg-card cursor-pointer transition-colors duration-150 hover:bg-accent/50",
-                isRead && "border-l-2 border-l-green-500",
+                "group relative flex items-center gap-3 px-4 py-3 bg-background cursor-pointer transition-colors duration-150 hover:bg-muted/50",
+                isRead && "border-l-2 border-l-brand-start/50",
                 !isRead && "border-l-2 border-l-transparent",
               )}
             >
@@ -226,7 +226,7 @@ const ChapterButton = ({
                 {isRead && (
                   <CheckCircle2
                     size={14}
-                    className="text-green-500"
+                    className="text-brand-start"
                     aria-label="Read"
                   />
                 )}

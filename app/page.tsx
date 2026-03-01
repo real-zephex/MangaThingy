@@ -10,6 +10,7 @@ import {
   AsurascansService,
   MangapillService,
 } from "@/lib/services/manga.actions";
+import { FadeIn } from "@/components/custom/ui/fade-in";
 
 // Dynamically import HeroSlider only when needed (saves 50KB bundle)
 const HeroSlider = dynamic(
@@ -37,37 +38,55 @@ const HeroSection = async () => {
 
 const Home = () => {
   return (
-    <main className="container mx-auto px-4 py-8 space-y-14">
+    <main className="container mx-auto px-4 py-8 flex flex-col gap-12 md:gap-16">
       <h1 className="sr-only">Otaku Oasis - Manga Reader</h1>
 
       {/* Hero Carousel */}
-      <Suspense fallback={<SkeletonHero />}>
-        <HeroSection />
-      </Suspense>
+      <FadeIn delay={0}>
+        <section>
+          <Suspense fallback={<SkeletonHero />}>
+            <HeroSection />
+          </Suspense>
+        </section>
+      </FadeIn>
+
+      <div className="h-px bg-border/20 w-full" />
 
       {/* Recently Read — prominent full-width strip */}
-      <RecentlyRead />
+      <FadeIn delay={0.1}>
+        <RecentlyRead />
+      </FadeIn>
+
+      <div className="h-px bg-border/20 w-full" />
 
       {/* Popular Section */}
-      <Suspense fallback={<SkeletonGrid count={10} />}>
-        <PopularSection />
-      </Suspense>
+      <FadeIn delay={0.2}>
+        <Suspense fallback={<SkeletonGrid count={10} />}>
+          <PopularSection />
+        </Suspense>
+      </FadeIn>
 
       {/* Featured Section */}
-      <Suspense
-        fallback={
-          <div className="bg-muted/30 -mx-4 px-4 py-12 rounded-2xl border border-border/30">
-            <SkeletonGrid count={4} />
-          </div>
-        }
-      >
-        <FeaturedSection />
-      </Suspense>
+      <FadeIn delay={0.3}>
+        <Suspense
+          fallback={
+            <div className="bg-muted/30 -mx-4 px-4 py-12 rounded-lg border border-border/20">
+              <SkeletonGrid count={4} />
+            </div>
+          }
+        >
+          <FeaturedSection />
+        </Suspense>
+      </FadeIn>
+
+      <div className="h-px bg-border/20 w-full" />
 
       {/* Latest Releases */}
-      <Suspense fallback={<SkeletonGrid count={10} />}>
-        <LatestSection />
-      </Suspense>
+      <FadeIn delay={0.4}>
+        <Suspense fallback={<SkeletonGrid count={10} />}>
+          <LatestSection />
+        </Suspense>
+      </FadeIn>
     </main>
   );
 };

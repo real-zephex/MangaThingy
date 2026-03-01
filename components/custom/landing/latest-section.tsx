@@ -16,7 +16,7 @@ export const LatestSection = async () => {
               Fresh Updates
             </span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             Latest <span className="text-brand-start">Releases</span>
           </h2>
         </div>

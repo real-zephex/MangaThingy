@@ -4,16 +4,13 @@ import { BookOpen, GitBranchPlus } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="mt-16 border-t border-border/50">
-      {/* Gradient accent line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-brand-start/40 to-transparent" />
-
+    <footer className="mt-16 border-t border-border/20 bg-background">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Column 1: Logo + tagline */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2 group w-fit">
-              <div className="p-1.5 bg-brand-start rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-200">
+              <div className="p-1.5 bg-brand-start rounded-[4px] group-hover:bg-brand-end transition-colors duration-200">
                 <BookOpen className="w-4 h-4 text-white" />
               </div>
               <h2 className="text-lg font-bold tracking-tight">

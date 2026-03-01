@@ -15,7 +15,7 @@ export const FeaturedSection = async () => {
               Handpicked for you
             </span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-black tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             Featured <span className="text-brand-start">Series</span>
           </h2>
         </div>

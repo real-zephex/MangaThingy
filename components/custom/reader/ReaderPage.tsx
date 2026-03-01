@@ -7,7 +7,19 @@ import {
   ChevronUp,
   Maximize2,
   Minimize2,
+  Settings2,
+  Rows2,
+  Columns2,
+  Check,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -34,6 +46,44 @@ export const ReaderView = ({
   const [showTopBar, setShowTopBar] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [layoutMode, setLayoutMode] = useState<"webtoon" | "classic">("webtoon");
+  const [filterMode, setFilterMode] = useState<"none" | "dim" | "sepia">("none");
+
+  // Smart Preloading
+  useEffect(() => {
+    if (pages.length === 0) return;
+    const preloadCount = 3;
+    const startIdx = currentPage; // Index of the next page (since currentPage is 1-indexed)
+    const endIdx = Math.min(startIdx + preloadCount, pages.length);
+
+    for (let i = startIdx; i < endIdx; i++) {
+      const img = new window.Image();
+      img.src = ImageProxy(pages[i]);
+    }
+  }, [currentPage, pages]);
+
+  // Keyboard Navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      switch (e.key) {
+        case "ArrowRight":
+        case "d":
+        case "D":
+          window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
+          break;
+        case "ArrowLeft":
+        case "a":
+        case "A":
+          window.scrollBy({ top: -window.innerHeight * 0.8, behavior: "smooth" });
+          break;
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Track scroll position for auto-hiding top bar and page counter
   // Debounced to reduce state updates from 60/sec (every scroll event) to ~7/sec
@@ -110,7 +160,11 @@ export const ReaderView = ({
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className={cn(
+      "min-h-screen bg-black transition-all duration-500",
+      filterMode === "dim" && "brightness-75",
+      filterMode === "sepia" && "sepia-[.3] brightness-90 contrast-95"
+    )}>
       {/* Floating top bar */}
       <header
         className={cn(
@@ -137,15 +191,15 @@ export const ReaderView = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-4 shrink-0">
             {/* Page counter */}
-            <span className="text-[11px] font-medium text-muted-foreground tabular-nums">
-              {currentPage} / {pages.length}
+            <span className="text-xs font-mono font-medium text-muted-foreground tracking-widest bg-muted/40 px-2 py-1 rounded-sm border border-border/20">
+              {String(currentPage).padStart(2, '0')} / {String(pages.length).padStart(2, '0')}
             </span>
 
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1.5 rounded-md hover:bg-accent transition-colors"
+              className="p-1.5 rounded-sm hover:bg-accent border border-transparent hover:border-border/30 transition-all text-muted-foreground hover:text-foreground"
               aria-label={isExpanded ? "Fit to width" : "Full width"}
             >
               {isExpanded ? (
@@ -154,6 +208,50 @@ export const ReaderView = ({
                 <Maximize2 size={16} />
               )}
             </button>
+
+            {/* Settings Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="p-1.5 rounded-sm hover:bg-accent border border-transparent hover:border-border/30 transition-all text-muted-foreground hover:text-foreground"
+                  aria-label="Reader Settings"
+                >
+                  <Settings2 size={16} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 font-sans border-border/40">
+                <DropdownMenuLabel className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Reading Mode</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border/30" />
+                <DropdownMenuItem onClick={() => setLayoutMode("webtoon")} className="flex items-center justify-between cursor-pointer rounded-sm py-2">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Rows2 size={14} className="text-muted-foreground" /> Webtoon
+                  </div>
+                  {layoutMode === "webtoon" && <Check size={14} className="text-brand-start" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLayoutMode("classic")} className="flex items-center justify-between cursor-pointer rounded-sm py-2">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Columns2 size={14} className="text-muted-foreground" /> Classic Page
+                  </div>
+                  {layoutMode === "classic" && <Check size={14} className="text-brand-start" />}
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator className="bg-border/30" />
+                <DropdownMenuLabel className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Color Filter</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border/30" />
+                <DropdownMenuItem onClick={() => setFilterMode("none")} className="flex items-center justify-between cursor-pointer rounded-sm">
+                  <span className="text-sm font-medium">None</span>
+                  {filterMode === "none" && <Check size={14} className="text-brand-start" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterMode("dim")} className="flex items-center justify-between cursor-pointer rounded-sm">
+                  <span className="text-sm font-medium">Dim (Night Mode)</span>
+                  {filterMode === "dim" && <Check size={14} className="text-brand-start" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterMode("sepia")} className="flex items-center justify-between cursor-pointer rounded-sm">
+                  <span className="text-sm font-medium">Sepia (Eye Care)</span>
+                  {filterMode === "sepia" && <Check size={14} className="text-brand-start" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -164,8 +262,9 @@ export const ReaderView = ({
           <div
             key={index}
             className={cn(
-              "relative w-full flex justify-center",
-              isExpanded ? "max-w-none" : "max-w-4xl px-4",
+              "relative flex justify-center",
+              isExpanded ? "w-full max-w-none" : "w-full max-w-4xl px-4",
+              layoutMode === "classic" ? "mb-12 bg-zinc-950/50 p-2 sm:p-4 border border-white/5 rounded-sm shadow-xl" : ""
             )}
           >
             <Image
@@ -187,9 +286,9 @@ export const ReaderView = ({
           </p>
           <Link
             href={backHref}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-start hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-medium text-background bg-foreground px-6 py-2.5 rounded-sm hover:bg-foreground/90 transition-colors"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={16} />
             Back to {mangaTitle || "manga"}
           </Link>
         </div>

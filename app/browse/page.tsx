@@ -35,9 +35,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       iconType = "search";
     } else {
       if (provider === "asurascans") {
-        const popular = await AsurascansService.getPopular();
-        results = popular.results;
-        title = "Popular on Asura Scans";
+        const latest = await AsurascansService.getLatest(1);
+        results = latest.results;
+        title = "Latest on Asura Scans";
         iconType = "trending";
       } else {
         const newest = await MangapillService.getNewest();

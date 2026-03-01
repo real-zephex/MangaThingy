@@ -83,10 +83,10 @@ const SearchManga = () => {
     return results.map((manga) => (
       <CommandItem
         key={`${source}-${manga.id}`}
-        className="flex items-center gap-3 p-2 cursor-pointer hover:bg-brand-start/5 transition-colors group"
+        className="flex items-center gap-3 p-2 cursor-pointer hover:bg-muted/50 transition-colors group rounded-[4px]"
         onSelect={() => onSelect(source, manga.id)}
       >
-        <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-md border border-border group-hover:border-brand-start transition-colors">
+        <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-[4px] border border-border/40 group-hover:border-border/80 transition-colors bg-muted">
           <Image
             src={ImageProxy(manga.image)}
             alt=""
@@ -118,7 +118,7 @@ const SearchManga = () => {
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-9 p-0 md:h-10 md:w-48 lg:w-60 md:justify-start md:px-3 md:py-2 border-2 hover:border-brand-start/50 transition-all"
+        className="relative h-9 w-9 p-0 md:h-10 md:w-48 lg:w-60 md:justify-start md:px-3 md:py-2 border border-border/40 rounded-sm hover:bg-muted/50 transition-colors bg-background"
         onClick={() => setOpen(true)}
         aria-label="Search manga"
       >
@@ -128,7 +128,7 @@ const SearchManga = () => {
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen} className="max-w-[90vw] md:max-w-3xl" shouldFilter={false}>
+      <CommandDialog open={open} onOpenChange={setOpen} className="max-w-[90vw] md:max-w-3xl rounded-[8px] overflow-hidden" shouldFilter={false}>
         <CommandInput
           placeholder="Type to search manga..."
           value={query}
@@ -150,32 +150,45 @@ const SearchManga = () => {
           )}
 
           {!loading && hasQuery && !error && (mangapillResults.length > 0 || asurascansResults.length > 0) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
-              <div className="flex flex-col">
-                <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
-                  Mangapill
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
+                <div className="flex flex-col">
+                  <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
+                    Mangapill
+                  </div>
+                  <CommandGroup>
+                    {mangapillResults.length > 0 ? (
+                      renderResults(mangapillResults, "mangapill")
+                    ) : (
+                      <div className="p-4 text-center text-xs text-muted-foreground">No results from Mangapill</div>
+                    )}
+                  </CommandGroup>
                 </div>
-                <CommandGroup>
-                  {mangapillResults.length > 0 ? (
-                    renderResults(mangapillResults, "mangapill")
-                  ) : (
-                    <div className="p-4 text-center text-xs text-muted-foreground">No results from Mangapill</div>
-                  )}
-                </CommandGroup>
-              </div>
-              <div className="flex flex-col">
-                <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
-                  Asurascans
+                <div className="flex flex-col">
+                  <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/30 sticky top-0 z-10 backdrop-blur-sm">
+                    Asurascans
+                  </div>
+                  <CommandGroup>
+                    {asurascansResults.length > 0 ? (
+                      renderResults(asurascansResults, "asurascans")
+                    ) : (
+                      <div className="p-4 text-center text-xs text-muted-foreground">No results from Asurascans</div>
+                    )}
+                  </CommandGroup>
                 </div>
-                <CommandGroup>
-                  {asurascansResults.length > 0 ? (
-                    renderResults(asurascansResults, "asurascans")
-                  ) : (
-                    <div className="p-4 text-center text-xs text-muted-foreground">No results from Asurascans</div>
-                  )}
-                </CommandGroup>
               </div>
-            </div>
+              <div className="p-2 border-t border-border/40 bg-muted/10 sticky bottom-0">
+                <CommandItem
+                  onSelect={() => {
+                    setOpen(false);
+                    router.push(`/browse?q=${encodeURIComponent(query)}`);
+                  }}
+                  className="flex justify-center text-xs font-semibold py-3 cursor-pointer text-brand-start hover:text-brand-start/80"
+                >
+                  View all results for &quot;{query}&quot; &rarr;
+                </CommandItem>
+              </div>
+            </>
           )}
         </CommandList>
       </CommandDialog>
