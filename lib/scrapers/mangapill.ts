@@ -145,9 +145,19 @@ export class Mangapill {
 
   async pages(id: string): Promise<ScraperResponse<string[]>> {
     try {
-      const cleanId = id.startsWith("/") ? id : `/${id}`;
+      // Decode the ID first in case it's URL encoded
+      const decodedId = decodeURIComponent(id);
+      const cleanId = decodedId.startsWith("/") ? decodedId : `/${decodedId}`;
       const url = `${this.proxyUrl}${this.parentUrl}${cleanId}`;
+      
+      console.log("[Mangapill Pages] Original ID:", id);
+      console.log("[Mangapill Pages] Decoded ID:", decodedId);
+      console.log("[Mangapill Pages] Clean ID:", cleanId);
+      console.log("[Mangapill Pages] Final URL:", url);
+      
       const response = await axios.get(url);
+      console.log("[Mangapill Pages] Response status:", response.status);
+      console.log("[Mangapill Pages] Response data length:", response.data?.length);
 
       const $ = cheerio.load(response.data);
 
@@ -159,12 +169,18 @@ export class Mangapill {
         .map((_, el) => $(el).attr("data-src") || "")
         .get();
 
+      console.log("[Mangapill Pages] Images found:", images.length);
+      
       return {
         status: response.status,
         results: images,
       };
     } catch (error) {
       console.error("[Mangapill Pages] Error:", error);
+      if (error instanceof Error) {
+        console.error("[Mangapill Pages] Error message:", error.message);
+        console.error("[Mangapill Pages] Error stack:", error.stack);
+      }
       return {
         status: 500,
         results: error instanceof Error ? error.message : "Unknown error",
