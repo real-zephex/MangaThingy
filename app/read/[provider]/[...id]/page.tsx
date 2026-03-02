@@ -46,6 +46,7 @@ export default async function ReaderPage({
 
   let pages: string[] = [];
   let error: string | null = null;
+  let chapters: { id: string; title: string }[] = [];
 
   try {
     const result = await functionMap[provider].getPages(chapterId);
@@ -53,6 +54,20 @@ export default async function ReaderPage({
       pages = result.results;
     } else {
       error = "Failed to load chapter pages.";
+    }
+
+    if (mangaId) {
+      const infoResult = await functionMap[provider].getInfo(mangaId);
+      if (
+        infoResult.status === 200 &&
+        infoResult.results &&
+        infoResult.results.chapters
+      ) {
+        chapters = infoResult.results.chapters.map((c) => ({
+          id: c.id,
+          title: c.title,
+        }));
+      }
     }
   } catch (e) {
     console.error("[ReaderPage] Error fetching pages:", e);
@@ -68,6 +83,7 @@ export default async function ReaderPage({
       chapterTitle={title || chapterId}
       mangaId={mangaId}
       mangaTitle={mangaTitle}
+      chapters={chapters}
     />
   );
 }

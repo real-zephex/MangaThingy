@@ -11,6 +11,8 @@ import {
   Rows2,
   Columns2,
   Check,
+  List,
+  ChevronRight,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -20,6 +22,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -32,6 +41,7 @@ interface ReaderViewProps {
   chapterTitle: string;
   mangaId?: string;
   mangaTitle?: string;
+  chapters?: { id: string; title: string }[];
 }
 
 export const ReaderView = ({
@@ -39,15 +49,21 @@ export const ReaderView = ({
   error,
   provider,
   chapterTitle,
+  chapterId,
   mangaId,
   mangaTitle,
+  chapters = [],
 }: ReaderViewProps) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [showTopBar, setShowTopBar] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [layoutMode, setLayoutMode] = useState<"webtoon" | "classic">("webtoon");
-  const [filterMode, setFilterMode] = useState<"none" | "dim" | "sepia">("none");
+  const [layoutMode, setLayoutMode] = useState<"webtoon" | "classic">(
+    "webtoon",
+  );
+  const [filterMode, setFilterMode] = useState<"none" | "dim" | "sepia">(
+    "none",
+  );
 
   // Smart Preloading
   useEffect(() => {
@@ -66,18 +82,28 @@ export const ReaderView = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if typing in an input
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+        return;
 
       switch (e.key) {
         case "ArrowRight":
         case "d":
         case "D":
-          window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
+          window.scrollBy({
+            top: window.innerHeight * 0.8,
+            behavior: "smooth",
+          });
           break;
         case "ArrowLeft":
         case "a":
         case "A":
-          window.scrollBy({ top: -window.innerHeight * 0.8, behavior: "smooth" });
+          window.scrollBy({
+            top: -window.innerHeight * 0.8,
+            behavior: "smooth",
+          });
           break;
       }
     };
@@ -137,9 +163,7 @@ export const ReaderView = ({
   }, []);
 
   // Build back link to the manga info page
-  const backHref = mangaId
-    ? `/manga/${provider}/${mangaId}`
-    : "/";
+  const backHref = mangaId ? `/manga/${provider}/${mangaId}` : "/";
 
   if (error) {
     return (
@@ -160,11 +184,13 @@ export const ReaderView = ({
   }
 
   return (
-    <div className={cn(
-      "min-h-screen bg-black transition-all duration-500",
-      filterMode === "dim" && "brightness-75",
-      filterMode === "sepia" && "sepia-[.3] brightness-90 contrast-95"
-    )}>
+    <div
+      className={cn(
+        "min-h-screen bg-black transition-all duration-500",
+        filterMode === "dim" && "brightness-75",
+        filterMode === "sepia" && "sepia-[.3] brightness-90 contrast-95",
+      )}
+    >
       {/* Floating top bar */}
       <header
         className={cn(
@@ -191,10 +217,39 @@ export const ReaderView = ({
             </div>
           </div>
 
+          {/* Top navigation center - Chapter Select */}
+          {chapters.length > 0 && (
+            <div className="hidden md:flex flex-1 justify-center items-center px-4">
+              <Select
+                value={decodeURIComponent(chapterId)}
+                onValueChange={(val) => {
+                  const selected = chapters.find((c) => c.id === val);
+                  if (selected) {
+                    window.location.href = `/read/${provider}/${encodeURIComponent(val)}?mangaId=${mangaId}&mangaTitle=${mangaTitle}&title=${encodeURIComponent(selected.title)}`;
+                  }
+                  console.log(chapters);
+                  console.log(chapterId);
+                }}
+              >
+                <SelectTrigger className="w-55 h-8 text-xs font-semibold">
+                  <SelectValue placeholder={chapterTitle} />
+                </SelectTrigger>
+                <SelectContent>
+                  {chapters.map((chap) => (
+                    <SelectItem key={chap.id} value={chap.id}>
+                      {chap.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="flex items-center gap-4 shrink-0">
             {/* Page counter */}
             <span className="text-xs font-mono font-medium text-muted-foreground tracking-widest bg-muted/40 px-2 py-1 rounded-sm border border-border/20">
-              {String(currentPage).padStart(2, '0')} / {String(pages.length).padStart(2, '0')}
+              {String(currentPage).padStart(2, "0")} /{" "}
+              {String(pages.length).padStart(2, "0")}
             </span>
 
             <button
@@ -202,11 +257,7 @@ export const ReaderView = ({
               className="p-1.5 rounded-sm hover:bg-accent border border-transparent hover:border-border/30 transition-all text-muted-foreground hover:text-foreground"
               aria-label={isExpanded ? "Fit to width" : "Full width"}
             >
-              {isExpanded ? (
-                <Minimize2 size={16} />
-              ) : (
-                <Maximize2 size={16} />
-              )}
+              {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
             </button>
 
             {/* Settings Dropdown */}
@@ -219,36 +270,70 @@ export const ReaderView = ({
                   <Settings2 size={16} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 font-sans border-border/40">
-                <DropdownMenuLabel className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Reading Mode</DropdownMenuLabel>
+              <DropdownMenuContent
+                align="end"
+                className="w-56 font-sans border-border/40"
+              >
+                <DropdownMenuLabel className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                  Reading Mode
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-border/30" />
-                <DropdownMenuItem onClick={() => setLayoutMode("webtoon")} className="flex items-center justify-between cursor-pointer rounded-sm py-2">
+                <DropdownMenuItem
+                  onClick={() => setLayoutMode("webtoon")}
+                  className="flex items-center justify-between cursor-pointer rounded-sm py-2"
+                >
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <Rows2 size={14} className="text-muted-foreground" /> Webtoon
+                    <Rows2 size={14} className="text-muted-foreground" />{" "}
+                    Webtoon
                   </div>
-                  {layoutMode === "webtoon" && <Check size={14} className="text-brand-start" />}
+                  {layoutMode === "webtoon" && (
+                    <Check size={14} className="text-brand-start" />
+                  )}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLayoutMode("classic")} className="flex items-center justify-between cursor-pointer rounded-sm py-2">
+                <DropdownMenuItem
+                  onClick={() => setLayoutMode("classic")}
+                  className="flex items-center justify-between cursor-pointer rounded-sm py-2"
+                >
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <Columns2 size={14} className="text-muted-foreground" /> Classic Page
+                    <Columns2 size={14} className="text-muted-foreground" />{" "}
+                    Classic Page
                   </div>
-                  {layoutMode === "classic" && <Check size={14} className="text-brand-start" />}
+                  {layoutMode === "classic" && (
+                    <Check size={14} className="text-brand-start" />
+                  )}
                 </DropdownMenuItem>
-                
+
                 <DropdownMenuSeparator className="bg-border/30" />
-                <DropdownMenuLabel className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Color Filter</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                  Color Filter
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-border/30" />
-                <DropdownMenuItem onClick={() => setFilterMode("none")} className="flex items-center justify-between cursor-pointer rounded-sm">
+                <DropdownMenuItem
+                  onClick={() => setFilterMode("none")}
+                  className="flex items-center justify-between cursor-pointer rounded-sm"
+                >
                   <span className="text-sm font-medium">None</span>
-                  {filterMode === "none" && <Check size={14} className="text-brand-start" />}
+                  {filterMode === "none" && (
+                    <Check size={14} className="text-brand-start" />
+                  )}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterMode("dim")} className="flex items-center justify-between cursor-pointer rounded-sm">
+                <DropdownMenuItem
+                  onClick={() => setFilterMode("dim")}
+                  className="flex items-center justify-between cursor-pointer rounded-sm"
+                >
                   <span className="text-sm font-medium">Dim (Night Mode)</span>
-                  {filterMode === "dim" && <Check size={14} className="text-brand-start" />}
+                  {filterMode === "dim" && (
+                    <Check size={14} className="text-brand-start" />
+                  )}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterMode("sepia")} className="flex items-center justify-between cursor-pointer rounded-sm">
+                <DropdownMenuItem
+                  onClick={() => setFilterMode("sepia")}
+                  className="flex items-center justify-between cursor-pointer rounded-sm"
+                >
                   <span className="text-sm font-medium">Sepia (Eye Care)</span>
-                  {filterMode === "sepia" && <Check size={14} className="text-brand-start" />}
+                  {filterMode === "sepia" && (
+                    <Check size={14} className="text-brand-start" />
+                  )}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -264,7 +349,9 @@ export const ReaderView = ({
             className={cn(
               "relative flex justify-center",
               isExpanded ? "w-full max-w-none" : "w-full max-w-4xl px-4",
-              layoutMode === "classic" ? "mb-12 bg-zinc-950/50 p-2 sm:p-4 border border-white/5 rounded-sm shadow-xl" : ""
+              layoutMode === "classic"
+                ? "mb-12 bg-zinc-950/50 p-2 sm:p-4 border border-white/5 rounded-sm shadow-xl"
+                : "",
             )}
           >
             <Image
@@ -284,13 +371,6 @@ export const ReaderView = ({
           <p className="text-xs text-muted-foreground/50 font-medium mb-3">
             End of Chapter
           </p>
-          <Link
-            href={backHref}
-            className="inline-flex items-center gap-2 text-sm font-medium text-background bg-foreground px-6 py-2.5 rounded-sm hover:bg-foreground/90 transition-colors"
-          >
-            <ArrowLeft size={16} />
-            Back to {mangaTitle || "manga"}
-          </Link>
         </div>
       </main>
 
