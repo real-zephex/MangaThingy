@@ -42,12 +42,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <GoogleAnalytics gaId="G-WSQFR03XW0" />
-        <script
+        {/*<script
           src="https://quge5.com/88/tag.min.js"
           data-zone="214492"
           async
           data-cfasync="false"
-        ></script>
+        ></script>*/}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -55,11 +55,7 @@ export default function RootLayout({
         <AppProviders>
           <ConvexClientProvider>
             <ClerkProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                enableSystem
-              >
+              <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
                 <NextTopLoader color="var(--brand-start)" showSpinner={false} />
 
                 <ToastProvider>
@@ -73,7 +69,9 @@ export default function RootLayout({
                           Skip to main content
                         </a>
                         <Navbar />
-                        <main id="main-content" className="grow">{children}</main>
+                        <main id="main-content" className="grow">
+                          {children}
+                        </main>
                         <ScrollToTop />
                         <Footer />
                       </div>
