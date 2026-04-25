@@ -1,209 +1,66 @@
-# Otaku Verse - Manga Reader Platform
+# Otaku Verse
 
-A modern, full-stack manga reading platform built with Next.js, TypeScript, and integrated web scrapers. Browse, search, and read manga from multiple sources with a sleek dark-themed interface.
+A high-performance manga reader platform built with Next.js, Hono, and Convex.
 
-## 🎯 Features
+## Core Stack
 
-- **Multi-Source Scraping**: Integrated scrapers for Mangapill and Asurascans
-- **Fast Search**: Search manga across multiple providers simultaneously
-- **Responsive Design**: Beautiful dark-themed UI optimized for all devices
-- **Chapter Management**: Browse chapters, view manga details, and track progress
-- **Local Storage**: Save reading progress and bookmarks
-- **Type-Safe API**: Full TypeScript support with Zod schemas
-- **Server-Side Rendering**: Optimized with Next.js App Router and ISR
-- **Production Ready**: Tested and deployed on Vercel
+- **Framework**: Next.js 15 (App Router)
+- **Backend**: Convex (Database/Auth), Hono (API Edge Routes)
+- **Scraping**: Cheerio-based scrapers for Mangapill and Asurascans
+- **Styling**: Tailwind CSS v4 + Shadcn UI (New York style)
+- **Runtime**: Bun
 
-## 🛠 Tech Stack
+## Project Architecture
 
-- **Frontend**: Next.js 16.1.1, React 19, TypeScript
-- **Styling**: Tailwind CSS, Shadcn/ui components, Framer Motion
-- **API**: Hono for REST API routes, Axios for HTTP requests
-- **Scraping**: Cheerio for HTML parsing
-- **State Management**: React hooks, Context API
-- **Validation**: Zod for schema validation
-- **UI Components**: Radix UI, Lucide Icons
+- `app/api/[[...route]]/`: Hono API implementation for provider scrapers.
+- `convex/`: Backend schema and database functions.
+- `lib/scrapers/`: Core scraping logic and provider implementations.
+- `lib/services/`: Server-side actions and data fetching wrappers.
+- `components/custom/`: Feature-specific UI components (Reader, Info, Landing).
 
-## 📋 Project Structure
-
-```
-new-manga-site/
-├── app/
-│   ├── api/                    # Hono API routes
-│   │   └── [[...route]]/
-│   │       └── route.ts        # All scraper endpoints
-│   ├── manga/                  # Manga detail pages
-│   ├── page.tsx                # Homepage
-│   └── layout.tsx
-├── lib/
-│   ├── scrapers/               # Scraper implementations
-│   │   ├── mangapill.ts
-│   │   ├── asurascans.ts
-│   │   ├── types.ts
-│   │   └── index.ts
-│   ├── services/               # API client services
-│   │   ├── manga.actions.ts
-│   │   └── manga.service.ts
-│   └── api-client.ts           # Type-safe frontend API client
-├── components/
-│   ├── custom/                 # Custom components
-│   │   ├── landing/
-│   │   ├── info/
-│   │   └── reader/
-│   └── ui/                     # Shadcn/ui components
-├── public/                     # Static assets
-└── [config files]
-```
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
+- [Bun](https://bun.sh) installed.
+- [Convex](https://convex.dev) account/CLI for the backend.
 
-- Node.js 18+ or Bun
-- npm, yarn, pnpm, or bun package manager
+### Setup
 
-### Installation
+1. **Clone & Install**
+   ```bash
+   git clone <repository-url>
+   bun install
+   ```
 
-1. **Clone the repository**
+2. **Environment**
+   Create a `.env.local` with your Convex and Clerk credentials.
 
+3. **Development**
+   ```bash
+   bun run dev
+   ```
+
+## Development
+
+### Adding a Scraper
+New scrapers should be added to `lib/scrapers/` and implement the common interface defined in `types.ts`. Register the new routes in `app/api/[[...route]]/route.ts`.
+
+### Linting
 ```bash
-git clone <repository-url>
-cd new-manga-site
+bun run lint
 ```
 
-2. **Install dependencies**
-
-```bash
-bun install
-# or
-npm install
-```
-
-3. **Run the development server**
-
-```bash
-bun run dev
-# or
-npm run dev
-```
-
-4. **Open in browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 📚 Available API Endpoints
+## API Overview
 
 ### Mangapill
-
-- `GET /api/mangapill/search/:query` - Search manga
-- `GET /api/mangapill/info/:id` - Get manga details
-- `GET /api/mangapill/pages/:id` - Get chapter pages
-- `GET /api/mangapill/newest` - Get newest manga
-- `GET /api/mangapill/recent` - Get recently updated
-- `GET /api/mangapill/images/:imageUrl` - Proxy images
+- `GET /api/mangapill/search/:query`
+- `GET /api/mangapill/info/:id`
+- `GET /api/mangapill/pages/:id`
 
 ### Asurascans
+- `GET /api/asurascans/search/:query`
+- `GET /api/asurascans/info/:id`
+- `GET /api/asurascans/pages/:id`
 
-- `GET /api/asurascans/search/:query` - Search manga
-- `GET /api/asurascans/info/:id` - Get manga details
-- `GET /api/asurascans/pages/:id` - Get chapter pages
-- `GET /api/asurascans/popular` - Get popular manga
-- `GET /api/asurascans/latest/:page` - Get latest updates
-- `GET /api/asurascans/genres/:type` - Get by genre
-- `GET /api/asurascans/genre-list` - List available genres
-
-## 💻 Usage
-
-### Frontend API Client
-
-Use the type-safe API client in React components:
-
-```typescript
-import { scrapersAPI } from "@/lib/api-client";
-
-// Search manga
-const results = await scrapersAPI.mangapill.search("naruto");
-
-// Get manga info
-const info = await scrapersAPI.mangapill.info("/manga/12/solo-leveling");
-
-// Get chapter pages
-const pages = await scrapersAPI.mangapill.pages(chapterId);
-```
-
-### Server Components
-
-Fetch data directly in server components:
-
-```typescript
-import { MangapillService } from "@/lib/services/manga.actions";
-
-export default async function MangaPage() {
-  const manga = await MangapillService.getNewest();
-  return <div>{/* render manga */}</div>;
-}
-```
-
-## 🏗 Building for Production
-
-### Build
-
-```bash
-bun run build
-# or
-npm run build
-```
-
-### Start Production Server
-
-```bash
-bun run start
-# or
-npm run start
-```
-
-## 📖 Documentation
-
-For detailed API documentation and examples, see:
-
-- **[SCRAPER_DOCS.md](./SCRAPER_DOCS.md)** - Integration status and features
-
-## 🔄 URL Encoding
-
-The API automatically handles special characters in IDs (slashes, spaces, etc.):
-
-```typescript
-// Works automatically - no manual encoding needed
-const manga = await scrapersAPI.mangapill.info("/manga/12/solo-leveling");
-```
-
-## 📝 Development Notes
-
-- **Hot Reload**: Changes to files are automatically reflected in the browser
-- **TypeScript**: Full type checking with strict mode enabled
-- **Linting**: ESLint configured for code quality
-- **Formatting**: Prettier configured for consistent code style
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🌐 Supported Sources
-
-- [Mangapill](https://mangapill.com) - Manga source
-- [Asurascans](https://asurascans.io) - Webtoon/Manga source
-
-## 🎨 Customization
-
-The UI is built with Tailwind CSS and Shadcn/ui components, making it easy to customize:
-
-- **Dark Theme**: Primary color scheme is dark with accent colors
-- **Components**: Located in `components/` directory
-- **Styles**: Global styles in `app/globals.css`
-- **Tailwind Config**: Customize in `tailwind.config.ts`
-
----
-
-**Happy Reading!** 📚✨
+## License
+MIT
