@@ -1,4 +1,4 @@
-# Otaku Verse
+# OtakuOasis
 
 A high-performance manga reader platform built with Next.js, Hono, and Convex.
 
