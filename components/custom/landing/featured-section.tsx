@@ -1,9 +1,9 @@
 import { MangaCard } from "@/components/custom/landing/cards";
-import { AsurascansService } from "@/lib/services/manga.actions";
+// import { AsurascansService } from "@/lib/services/manga.actions";
 import { Sparkles } from "lucide-react";
 
 export const FeaturedSection = async () => {
-  const asurascansPopular = await AsurascansService.getPopular();
+  // const asurascansPopular = await AsurascansService.getPopular();
 
   return (
     <section className="bg-muted/30 -mx-4 px-4 py-12 rounded-2xl border border-border/30">
@@ -21,13 +21,13 @@ export const FeaturedSection = async () => {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {asurascansPopular.results.slice(0, 4).map((manga) => (
+        {/* {asurascansPopular.results.slice(0, 4).map((manga) => (
           <MangaCard
             key={`as-feat-${manga.id}`}
             manga={{ ...manga, source: "asurascans" }}
             variant="featured"
           />
-        ))}
+        ))} */}
       </div>
     </section>
   );

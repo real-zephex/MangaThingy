@@ -6,10 +6,7 @@ import { FeaturedSection } from "@/components/custom/landing/featured-section";
 import { LatestSection } from "@/components/custom/landing/latest-section";
 import { SkeletonHero } from "@/components/custom/ui/skeleton-hero";
 import { SkeletonGrid } from "@/components/custom/ui/skeleton-card";
-import {
-  AsurascansService,
-  MangapillService,
-} from "@/lib/services/manga.actions";
+import { MangapillService } from "@/lib/services/manga.actions";
 import { FadeIn } from "@/components/custom/ui/fade-in";
 
 // Dynamically import HeroSlider only when needed (saves 50KB bundle)
@@ -22,16 +19,11 @@ const HeroSlider = dynamic(
 );
 
 const HeroSection = async () => {
-  const [mangapillNewest, asurascansPopular] = await Promise.all([
-    MangapillService.getNewest(),
-    AsurascansService.getPopular(),
-  ]);
+  const mangapillNewest = await MangapillService.getNewest();
 
   return (
     <section>
-      <HeroSlider
-        data={{ mangapill: mangapillNewest, asurascans: asurascansPopular }}
-      />
+      <HeroSlider data={{ mangapill: mangapillNewest }} />
     </section>
   );
 };
@@ -67,6 +59,7 @@ const Home = () => {
       </FadeIn>
 
       {/* Featured Section */}
+      {/*
       <FadeIn delay={0.3}>
         <Suspense
           fallback={
@@ -78,15 +71,17 @@ const Home = () => {
           <FeaturedSection />
         </Suspense>
       </FadeIn>
+      */}
 
       <div className="h-px bg-border/20 w-full" />
 
-      {/* Latest Releases */}
+      {/* Latest Releases 
       <FadeIn delay={0.4}>
         <Suspense fallback={<SkeletonGrid count={10} />}>
           <LatestSection />
         </Suspense>
       </FadeIn>
+*/}
     </main>
   );
 };

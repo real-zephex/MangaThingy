@@ -19,7 +19,8 @@ import { useRef, useState } from "react";
 const HeroSlider = ({
   data,
 }: {
-  data: { mangapill: Results<Manga>; asurascans: Results<Manga> };
+  // data: { mangapill: Results<Manga>; asurascans: Results<Manga> };
+  data: { mangapill: Results<Manga> };
 }) => {
   const swiperRef = useRef<SwiperClass | null>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -29,14 +30,15 @@ const HeroSlider = ({
     ...i,
     source: "mangapill",
   }));
-  const asurascansResults = data.asurascans.results.map((i) => ({
-    ...i,
-    source: "asurascans",
-  }));
+  // const asurascansResults = data.asurascans.results.map((i) => ({
+  //   ...i,
+  //   source: "asurascans",
+  // }));
 
-  const combinedResults = [...mangapillResults, ...asurascansResults].filter(
-    (i) => i.image,
-  );
+  // const combinedResults = [...mangapillResults, ...asurascansResults].filter(
+  //   (i) => i.image,
+  // );
+  const combinedResults = mangapillResults.filter((i) => i.image);
 
   const toggleAutoplay = () => {
     if (!swiperRef.current) return;
@@ -72,8 +74,9 @@ const HeroSlider = ({
         className="h-[420px] md:h-[500px] select-none"
       >
         {combinedResults.map((manga, idx) => {
-          const sourceColor =
-            manga.source === "asurascans" ? "bg-brand-start" : "bg-brand-end";
+           // const sourceColor =
+             // manga.source === "asurascans" ? "bg-brand-start" : "bg-brand-end";
+           const sourceColor = "bg-brand-end";
           return (
             <SwiperSlide
               key={`hero-${manga.source}-${manga.id}`}

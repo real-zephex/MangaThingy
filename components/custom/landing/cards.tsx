@@ -17,8 +17,9 @@ interface MangaCardProps {
 }
 
 export const MangaCard = ({ manga, variant = "default" }: MangaCardProps) => {
-  const sourceColor =
-    manga.source === "asurascans" ? "bg-brand-start" : "bg-brand-end";
+  // const sourceColor =
+  //   manga.source === "asurascans" ? "bg-brand-start" : "bg-brand-end";
+  const sourceColor = "bg-brand-end";
 
   if (variant === "compact") {
     return (
