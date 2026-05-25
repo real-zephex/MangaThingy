@@ -4,12 +4,6 @@ const nextConfig: NextConfig = {
   /* Image optimization */
   images: {
     unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "goodproxy.goodproxy.workers.dev",
-      },
-    ],
   },
 
   /* Compression and optimization */

@@ -121,18 +121,29 @@ app.get("/mangapill/images/:imageUrl", async (c) => {
   }
 
   try {
+    const domain = new URL(imageUrl).hostname;
+    const referer = domain.includes("asurascans")
+      ? "https://asurascans.io/"
+      : "https://mangapill.com/";
+
     const response = await axios.get(imageUrl, {
-      headers: {
-        Referer: "https://mangapill.com/",
-      },
+      headers: { Referer: referer },
       responseType: "arraybuffer",
     });
-    return new Response(response.data, {
-      headers: {
-        "Content-Type": "image/jpeg",
-        "Cache-Control": "public, max-age=86400",
-      },
-    });
+
+    const contentType =
+      response.headers["content-type"] || "image/jpeg";
+
+    const headers: Record<string, string> = {
+      "Content-Type": contentType,
+      "Cache-Control": "public, max-age=86400",
+    };
+
+    if (response.headers["content-length"]) {
+      headers["Content-Length"] = response.headers["content-length"];
+    }
+
+    return new Response(response.data, { headers });
   } catch (error) {
     return c.json(
       {
